@@ -3,13 +3,13 @@
 ## Quick Smoke Test (2 minutes before any release)
 
 ### ✅ App Loads
-- [ ] Navigate to http://127.0.0.1:3000
+- [ ] Navigate to http://localhost:3000
 - [ ] Page loads without errors
 - [ ] Header shows "Queen Bee Candles"
 - [ ] Navigation menu works (Home, About, Contact)
 
 ### ✅ Products Display
-- [ ] 4 candle products are visible
+- [ ] All candle products are visible
 - [ ] Product images load correctly
 - [ ] Product names and prices display
 - [ ] "Add to Cart" buttons are present
@@ -48,8 +48,8 @@
 
 ---
 
-**Philosophy**: For a simple 4-product candle business, this 2-minute manual test is more valuable than 356 automated tests that are hard to maintain.
+**Philosophy**: For a practical candle business, this 2-minute manual test provides more value than maintaining complex automated test infrastructure.
 
-**Time Investment**: 2 minutes vs. hours maintaining complex test infrastructure.
+**Time Investment**: 2 minutes vs. hours maintaining complex test setups.
 
-**Coverage**: Tests real user workflows that actually matter for your business.
+**Coverage**: Tests real user workflows that actually matter for your customers.

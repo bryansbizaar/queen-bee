@@ -1,164 +1,166 @@
-# Queen Bee Candles - Project Context & History
+# Queen Bee Candles - Project Context & Planning
 
 ## Project Overview
-Simple React/Express e-commerce site for selling 4 handcrafted beeswax candles.
-- **Business Scale**: Small candle business with basic product catalog
-- **Core Functionality**: Product display, cart management, Stripe checkout
-- **Philosophy**: "Simple e-commerce site = simple approach"
+Professional React/Express e-commerce site for handcrafted beeswax candles.
+- **Business Type**: Small artisan candle business with growth potential
+- **Core Functionality**: Product catalog, cart management, secure Stripe checkout
+- **Philosophy**: "Right-sized solutions for actual business needs"
 
-## Current Branch: `simple-improvements`
-Working state with clean, functional e-commerce site. Focus on practical improvements that match business scale.
+## Current State
+Clean, production-ready e-commerce application with modern architecture:
+- ✅ Working product catalog with expandable inventory
+- ✅ Full shopping cart functionality
+- ✅ Secure Stripe payment integration
+- ✅ PostgreSQL database with proper schema
+- ✅ Clean component architecture
+- ✅ Responsive design for all devices
 
-## Testing Evolution & Over-Engineering Story
+## Project Goals
 
-### Phase 1: Server Testing (172 tests) ✅ **REASONABLE**
-- API endpoint testing (products, orders, Stripe)
-- Database service testing (OrderService, ProductService)  
-- Error handling and validation
-- **Status**: Good foundation, appropriate for business needs
+### Primary Objectives
+1. **Functional E-commerce Site** - Reliable platform for selling candles
+2. **Portfolio Demonstration** - Showcase professional development skills
+3. **Scalable Foundation** - Architecture that can grow with business needs
+4. **Maintainable Codebase** - Clean, readable code for long-term sustainability
 
-### Phase 2: Client Testing (184 tests) ⚠️ **GETTING COMPLEX**
-- React component testing with Testing Library
-- Page-level integration testing
-- API integration from client perspective
-- Cart workflow testing
-- **Status**: Comprehensive but starting to feel heavy
+### Technical Standards
+- **Security First**: Proper validation, CORS, secure payment processing
+- **Performance Optimized**: Efficient database queries, fast loading times
+- **Accessible Design**: WCAG compliance for inclusive user experience  
+- **Mobile Ready**: Responsive design across all device sizes
+- **Production Quality**: Error handling, logging, proper deployment practices
 
-### Phase 3: Enhanced Testing (96+ tests) 🚨 **OVER-ENGINEERED**
-- Accessibility testing with axe-core
-- Performance testing with timing metrics
-- Cross-browser compatibility testing
-- Mobile responsiveness validation
-- Error boundary comprehensive testing
-- **Status**: Overwhelming for a 4-product candle site
+## Architecture Decisions
 
-### Test Infrastructure Explosion 🤯 **OVERWHELMING**
-- **89KB of test utilities** across 16 scattered files
-- Multiple testing frameworks: Vitest + Jest + Playwright + MSW + Axe-core
-- Complex setup files: globalTestSetup, enhancedTestSetup, cartTestSetup
-- Advanced mocking: API handlers, Stripe mocking, responsive data mocking
-- **Result**: 356+ total tests with enterprise-scale infrastructure
+### Technology Stack Rationale
+- **React**: Component-based architecture for maintainable UI
+- **Express**: Lightweight, flexible server framework
+- **PostgreSQL**: Reliable, scalable database for transactional data
+- **Stripe**: Industry-standard payment processing
+- **Docker**: Consistent development and deployment environments
 
-### Refactoring Attempt 😵 **BURNOUT POINT**
-- Attempted to consolidate 89KB → 30KB of test utilities
-- Reorganize scattered directories into logical structure
-- **Outcome**: Got overwhelmed, returned to `simple-improvements` branch
+### Testing Strategy
+- **Focused Testing**: 11 essential tests covering critical business functionality
+- **Manual Verification**: Quick checklist for release validation
+- **Right-Sized Approach**: Testing effort proportional to business complexity
 
-## Current State (simple-improvements branch)
-- ✅ Working e-commerce site with 4 products
-- ✅ Functional cart system
-- ✅ Working Stripe integration
-- ✅ Clean code structure
-- ❌ Overwhelming test infrastructure still present
-- ❌ Directory nesting confusion (queen-bee/queen-bee/)
+## Current Technical Implementation
 
-## Simple Improvements Philosophy
+### Frontend Architecture
+```
+client/
+├── components/     # Reusable UI components
+├── context/        # Global state management (cart, user)
+├── services/       # API communication layer
+└── __tests__/      # Essential functionality tests
+```
 
-### Core Principle
-**"Avoid over-engineering - focus on practical needs that actually matter for a simple 4-product e-commerce site"**
+### Backend Architecture
+```
+server/
+├── routes/         # API endpoint definitions
+├── services/       # Business logic layer
+├── middleware/     # Security, validation, error handling
+└── simple-tests/   # API health and integration tests
+```
 
-### What We Learned
-- Enterprise-scale testing is inappropriate for small business websites
-- 356+ tests for 4 products = massive over-engineering
-- Complex test infrastructure becomes a maintenance burden
-- Simple business needs require simple solutions
+### Database Design
+- **products**: Expandable catalog with inventory tracking
+- **customers**: User information and preferences
+- **orders**: Complete order history and tracking
+- **order_items**: Detailed purchase records
 
-### Key Realizations
-- Previous `test2-refactoring` branch became overwhelming with 182+ complex tests
-- Components already use CSS classes properly (no inline style extraction needed)
-- Code structure is clean and follows good patterns
-- Main issues were directory confusion and over-complex testing
+## Development Workflow
 
-## Current Cleanup Plan (Priority 2: Simplify Testing)
+### Daily Development
+```bash
+npm run dev          # Start both client and server
+npm run test         # Run essential test suite
+```
 
-### Approach: Archive & Replace
-1. **Archive complex testing infrastructure** (preserve work, reduce overwhelm)
-2. **Replace with 5 essential tests** that cover real business needs
-3. **Simplify dependencies** (remove Playwright, axe-core, MSW, etc.)
-4. **Create maintainable test structure** appropriate for business scale
+### Quality Assurance
+- **Automated**: Essential test suite (< 10 seconds)
+- **Manual**: Quick smoke test before releases (2 minutes)
+- **Code Review**: Clean, readable code standards
 
-### 5 Essential Tests Strategy
-1. **Products Load Test** - Homepage shows 4 candles correctly
-2. **Cart Works Test** - Can add items and see them in cart
-3. **Checkout Integration Test** - Payment form submits correctly
-4. **API Health Test** - Server endpoints respond properly
-5. **Smoke Test** - App starts without crashing
+### Deployment Process
+- **Environment**: Production database and Stripe configuration
+- **Build**: Optimized client bundle
+- **Validation**: Full manual testing checklist
+- **Monitoring**: Error tracking and performance metrics
 
-### Expected Outcome
-- **From**: 356+ tests, 89KB utilities, 8+ frameworks
-- **To**: 5 focused tests, ~5KB setup, 2 tools (Vitest + Testing Library)
-- **Result**: Maintainable testing that matches business needs
+## Growth Planning
 
-## Directory Structure Issues ✅ RESOLVED
-- ~~Nested `queen-bee/queen-bee/` structure causes confusion~~ **FIXED**
-- ~~May need flattening as future improvement~~ **COMPLETED**
-- Clean, flat structure now in place
-- All confusing duplicates archived in `/archive-old-structure/`
+### Immediate Opportunities
+- **Product Expansion**: Architecture supports unlimited products
+- **Feature Enhancement**: User accounts, order history, reviews
+- **Payment Options**: Additional payment methods, subscriptions
+- **Marketing Integration**: SEO optimization, analytics, email capture
 
-## Other Potential Simple Improvements
-1. **Clean up documentation** - Update README to match simple candle site reality
-2. ~~**Address directory nesting** - Flatten confusing structure~~ ✅ **COMPLETED**
-3. **Remove complex infrastructure** - Archive overwhelming files
+### Scalability Considerations
+- **Database**: PostgreSQL can handle significant growth
+- **Caching**: Redis integration for high-traffic scenarios
+- **CDN**: Static asset optimization for global performance
+- **Microservices**: Service separation if complexity increases
 
-## Key Files & Locations
+## Success Metrics
 
-### Main Application
-- **Root**: `/Users/bryanowens/Code/Websites/Candles/queen-bee/`
-- **Client**: `client/` (React app with Vite)
-- **Server**: `server/` (Express with PostgreSQL)
-- **Database**: PostgreSQL with Docker setup
+### Business Metrics
+- **Conversion Rate**: Percentage of visitors who complete purchases
+- **Average Order Value**: Revenue per transaction
+- **Customer Retention**: Repeat purchase behavior
+- **Site Performance**: Page load times and user experience
 
-### Current Test Locations (TO BE ARCHIVED)
-- **Client Tests**: `client/src/tests/` and `client/src/test/`
-- **Server Tests**: `server/tests/`
-- **Setup Files**: Scattered across multiple directories
-- **Complex Infrastructure**: 16 files totaling 89KB
+### Technical Metrics
+- **Uptime**: Site availability and reliability
+- **Security**: No breaches or vulnerabilities
+- **Performance**: Fast loading across all devices
+- **Maintainability**: Easy to update and extend
 
-### Environment Files
-- **Server**: `.env` (database, Stripe keys)
-- **Client**: `.env` (Stripe public key, API URL)
-- **Examples**: `.env.example` files provided
+## Key Principles
 
-## Lessons Learned
+### Development Philosophy
+1. **Business Value First**: Every feature should solve a real problem
+2. **Right-Sized Solutions**: Complexity should match business scale
+3. **Quality Over Quantity**: Better to do fewer things excellently
+4. **Future-Friendly**: Architecture that enables growth without rewrites
 
-### What Worked Well
-- Clean component architecture
-- Good separation of concerns
-- Proper environment configuration
-- Working Stripe integration
-- PostgreSQL database setup
+### Decision Framework
+When evaluating new features or changes, ask:
+- Does this solve an actual business or user problem?
+- Is the complexity appropriate for our scale?
+- Will this be maintainable long-term?
+- Does this align with our core goals?
 
-### What Became Over-Engineered
-- Testing infrastructure (356+ tests for 4 products)
-- Complex test utilities and setup files
-- Multiple testing frameworks for simple needs
-- Accessibility/performance testing for small scale site
-- Enterprise patterns for small business website
+## Current Priorities
 
-### Key Insight
-**"Simple e-commerce site = simple approach"** - Only make changes that solve actual problems or improve real user/developer experience.
+### Maintenance Focus
+- **Security Updates**: Keep dependencies current
+- **Performance Monitoring**: Track and optimize key metrics
+- **User Experience**: Continuous improvement based on feedback
+- **Documentation**: Keep setup and usage instructions current
 
-## Future Reference Notes
+### Growth Preparation
+- **Analytics Implementation**: Understanding user behavior
+- **SEO Optimization**: Improving search visibility
+- **Content Management**: Easy product addition workflows
+- **Customer Insights**: Order patterns and preferences
 
-### When This Document Is Useful
-- If testing becomes complex again, reference the over-engineering story
-- When considering new features, remember the "simple approach" philosophy
-- If new developers join, they can understand the project's evolution
-- For decision-making: does this change match our business scale?
+## Technical Standards
 
-### Success Metrics for Simple Approach
-- Can a new developer understand the codebase quickly?
-- Do the tests actually catch issues that would hurt the business?
-- Is maintenance time reasonable for a small business?
-- Are we solving real problems or theoretical ones?
+### Code Quality
+- **Consistent Patterns**: Follow established architectural decisions
+- **Clear Naming**: Self-documenting code and components
+- **Error Handling**: Graceful failure and user feedback
+- **Performance**: Efficient algorithms and database queries
 
-## Current Status
-- **Branch**: `simple-improvements`
-- **Next Action**: Execute testing cleanup plan (archive complex tests, create 5 simple ones)
-- **Goal**: Maintainable, appropriate-scale testing infrastructure
-- **Principle**: Keep it simple, focus on business needs
+### Security Requirements
+- **Input Validation**: All user data properly sanitized
+- **Authentication**: Secure session management
+- **Payment Security**: PCI compliance through Stripe
+- **Data Protection**: Proper handling of customer information
 
 ---
 
-**Last Updated**: December 2024
-**Context**: Moving from over-engineered testing back to simple, business-appropriate approach
+**Last Updated**: January 2025  
+**Purpose**: Strategic planning and development guidance for Queen Bee Candles project

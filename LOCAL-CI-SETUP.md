@@ -2,7 +2,7 @@
 
 ## What This Gives You
 
-✅ **Automated Testing** - Tests run on every push/PR  
+✅ **Automated Testing** - Essential tests run on every push/PR  
 ✅ **Quality Assurance** - Catch issues before they reach main  
 ✅ **Security Monitoring** - Basic dependency vulnerability checks  
 ✅ **Build Verification** - Ensure production builds work  
@@ -14,14 +14,14 @@
 ### **Daily Development (No Change)**
 ```bash
 # Same as before
-npm run dev          # Start local development
+npm run dev          # Start local development (client on :3000, server on :8080)
 npm run test:watch   # Run tests while coding
 ```
 
 ### **Before Pushing Changes**
 ```bash
 # Make sure everything works locally
-npm test             # Run all tests
+npm test             # Run all tests (quick - 11 focused tests)
 npm run build        # Test production build
 npm run lint         # Check code quality
 
@@ -32,8 +32,8 @@ git push
 ```
 
 ### **GitHub Actions Will Automatically:**
-1. 🧪 Run your 356 tests
-2. 🔨 Test production build
+1. 🧪 Run your essential test suite (11 focused tests)
+2. 🔨 Test production build  
 3. 🔍 Check code quality (linting)
 4. 🛡️ Basic security scan
 5. ✅ Show green checkmark if all pass
@@ -62,23 +62,29 @@ git push
 
 1. **Verify Everything Works Locally**
    ```bash
-   npm run dev          # Test locally
-   npm test            # All tests pass
+   npm run dev          # Test locally (http://localhost:3000)
+   npm test            # All tests pass (11 essential tests)
    npm run build       # Production build succeeds
    ```
 
-2. **Deploy Your Way**
+2. **Quick Manual Test**
+   - Check all 4 products display correctly
+   - Test cart functionality
+   - Verify payment form appears
+   - Test mobile responsiveness
+
+3. **Deploy Your Way**
    ```bash
    # Copy built files to your server
    # OR upload to hosting service  
    # OR use your preferred deployment method
    ```
 
-3. **Quick Health Check**
+4. **Quick Health Check**
    ```bash
    # Test your deployed site
-   curl https://yoursite.com/health
-   # Or just visit in browser
+   curl https://yoursite.com/api/products
+   # Or just visit in browser and test core functionality
    ```
 
 ## 📊 GitHub Actions Dashboard
@@ -92,7 +98,7 @@ You'll see test results at:
 
 ### **What's Protected:**
 - Can't accidentally deploy broken code
-- Tests catch regressions before they go live
+- Essential functionality is tested before deployment
 - Build failures are caught early
 - Security vulnerabilities are flagged
 
@@ -101,6 +107,21 @@ You'll see test results at:
 - Use any hosting method
 - Make changes at your own pace
 - Full control over your infrastructure
+
+## 🎯 Testing Strategy
+
+### **Automated (11 focused tests):**
+- **Client Tests (6)**: Basic functionality, smoke tests, product display
+- **Server Tests (5)**: API health, product data, error handling
+
+### **Manual (2-minute checklist):**
+- Products display correctly
+- Cart functionality works
+- Navigation is functional
+- Payment form appears
+- Responsive design works
+
+**Philosophy**: Right-sized testing for a practical e-commerce site. Essential coverage without over-engineering.
 
 ## 🔄 Easy Upgrade Paths
 
@@ -138,7 +159,7 @@ You'll see test results at:
 
 ### **If Tests Fail in GitHub Actions:**
 1. Check the Actions tab for details
-2. Run the same tests locally
+2. Run the same tests locally: `npm test`
 3. Fix issues and push again
 
 ### **If You Want to Skip CI:**
@@ -151,11 +172,12 @@ git commit -m "Quick fix [skip ci]"
 - **Environment variables**: Tests use test env, not production
 - **Database**: GitHub Actions uses fresh test database
 - **Dependencies**: Make sure package-lock.json is committed
+- **Port conflicts**: Ensure tests don't conflict with dev servers
 
 ---
 
 ## 🎉 You're All Set!
 
-Your next push will trigger the first test run. You get all the benefits of professional CI/CD without any hosting complexity or costs. Perfect for a solo developer wanting quality assurance without operational overhead!
+Your next push will trigger the first test run. You get all the benefits of professional CI/CD without any hosting complexity or costs. Perfect for a practical e-commerce site with focused testing that matches your business scale.
 
 When you're ready to upgrade to automatic deployment, it's just adding a few lines to the existing workflow.
