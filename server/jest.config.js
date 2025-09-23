@@ -12,8 +12,7 @@ export default {
   maxWorkers: 1,
   forceExit: true,
   
-  // Handle ES modules
-  extensionsToTreatAsEsm: ['.js'],
+  // Handle ES modules - removed extensionsToTreatAsEsm since package.json has "type": "module"
   transform: {},
   
   // Coverage settings (disabled for simple setup)

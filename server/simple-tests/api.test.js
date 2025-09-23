@@ -26,7 +26,7 @@ describe('API Health Tests', () => {
       
       products.forEach(product => {
         expect(product).toHaveProperty('id');
-        expect(product).toHaveProperty('name');
+        expect(product).toHaveProperty('title');
         expect(product).toHaveProperty('price');
         expect(product).toHaveProperty('image');
         expect(typeof product.price).toBe('number');
