@@ -17,6 +17,15 @@ build/
 */dist/
 */build/
 
+# Vite temporary files
+.vite/
+**/deps_temp_*
+
+# Development artifacts
+archive*/
+testing-archive*/
+*.backup
+
 # Logs
 logs
 *.log
