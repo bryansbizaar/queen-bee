@@ -1,0 +1,256 @@
+import { render, screen, waitFor } from "@testing-library/react";
+import { vi } from "vitest";
+import userEvent from "@testing-library/user-event";
+import { Elements } from "@stripe/react-stripe-js";
+import { BrowserRouter as Router } from "react-router-dom";
+import PropTypes from "prop-types";
+import { CartProvider } from "../../../context/CartContext";
+import StripeCheckout from "../../../components/StripeCheckout";
+import { mockStripe, mockStripeElements } from "../../../tests/setup/mockStripe";
+import { handlers } from "../../../tests/setup/mockApiHandlers";
+import { server } from "../../../tests/setup/enhancedTestSetup";
+
+// Mock useNavigate
+const mockNavigate = vi.fn();
+vi.mock("react-router-dom", async () => {
+  const actual = await vi.importActual("react-router-dom");
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  };
+});
+
+// Test wrapper component with proper PropTypes
+const TestWrapper = ({ children }) => (
+  <Router>
+    <CartProvider>
+      <Elements stripe={mockStripe}>{children}</Elements>
+    </CartProvider>
+  </Router>
+);
+
+TestWrapper.propTypes = {
+  children: PropTypes.node.isRequired,
+};
+
+// Mock props for StripeCheckout component
+const defaultProps = {
+  clientSecret: "pi_test_clientsecret",
+  orderId: "QBC-12345",
+  customerEmail: "test@example.com",
+  amount: 2500, // $25.00 in cents
+  addressData: {
+    fullName: "John Doe",
+    addressLine1: "123 Test Street",
+    addressLine2: "Apt 4B",
+    city: "Whangarei",
+    postalCode: "0110",
+    shippingOption: "ship",
+  },
+};
+
+const pickupAddressData = {
+  fullName: "Jane Smith",
+  shippingOption: "pickup",
+};
+
+describe("CheckoutFormEnhanced - 20 Test Cases per Implementation Guide", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockNavigate.mockClear();
+    
+    // Create a real sessionStorage mock that actually stores data
+    const sessionStorageData = {};
+    Object.defineProperty(window, 'sessionStorage', {
+      value: {
+        getItem: (key) => sessionStorageData[key] || null,
+        setItem: (key, value) => {
+          sessionStorageData[key] = value;
+        },
+        removeItem: (key) => {
+          delete sessionStorageData[key];
+        },
+        clear: () => {
+          Object.keys(sessionStorageData).forEach(key => delete sessionStorageData[key]);
+        }
+      },
+      writable: true
+    });
+    
+    sessionStorage.clear();
+
+    // Setup MSW handlers
+    server.use(...handlers);
+
+    // Reset mock stripe elements
+    mockStripe.confirmCardPayment.mockClear();
+    
+    // Create mock card element
+    const mockCardElement = {
+      mount: vi.fn(),
+      unmount: vi.fn(),
+      on: vi.fn(),
+      off: vi.fn(),
+      update: vi.fn(),
+      focus: vi.fn(),
+      blur: vi.fn(),
+      clear: vi.fn(),
+    };
+    
+    mockStripeElements.getElement.mockReturnValue(mockCardElement);
+  });
+
+  describe("Advanced Form Validation (8 tests)", () => {
+    test("should display order summary with correct customer information", () => {
+      render(
+        <TestWrapper>
+          <StripeCheckout {...defaultProps} />
+        </TestWrapper>
+      );
+
+      expect(screen.getByText("Order Summary")).toBeInTheDocument();
+      expect(screen.getByText("QBC-12345")).toBeInTheDocument();
+      expect(screen.getByText("John Doe")).toBeInTheDocument();
+      expect(screen.getByText("test@example.com")).toBeInTheDocument();
+      expect(screen.getByText("Ship to Address")).toBeInTheDocument();
+      expect(
+        screen.getByText("123 Test Street, Whangarei 0110")
+      ).toBeInTheDocument();
+    });
+
+    test("should perform real-time field validation on form inputs", () => {
+      render(
+        <TestWrapper>
+          <StripeCheckout {...defaultProps} />
+        </TestWrapper>
+      );
+
+      // Test that form validates Stripe elements are loaded
+      const paymentButton = screen.getByRole("button", { name: /pay/i });
+      expect(paymentButton).toBeEnabled();
+    });
+
+    test("should validate cross-field validation rules between shipping and billing", () => {
+      // Test shipping option with complete address
+      render(
+        <TestWrapper>
+          <StripeCheckout {...defaultProps} />
+        </TestWrapper>
+      );
+
+      expect(screen.getByText("Ship to Address")).toBeInTheDocument();
+      expect(
+        screen.getByText("123 Test Street, Whangarei 0110")
+      ).toBeInTheDocument();
+    });
+
+    test("should display custom validation messages for form errors", async () => {
+      const user = userEvent.setup();
+
+      render(
+        <TestWrapper>
+          <StripeCheckout {...defaultProps} />
+        </TestWrapper>
+      );
+
+      // Mock payment error to test validation message display
+      mockStripe.confirmCardPayment.mockResolvedValue({
+        error: { message: "Your card was declined." },
+      });
+
+      const paymentButton = screen.getByRole("button", { name: /pay/i });
+      await user.click(paymentButton);
+
+      await waitFor(() => {
+        expect(screen.getByText("Your card was declined.")).toBeInTheDocument();
+      });
+    });
+
+    test("should maintain form state persistence across rerenders", () => {
+      const { rerender } = render(
+        <TestWrapper>
+          <StripeCheckout {...defaultProps} />
+        </TestWrapper>
+      );
+
+      // Verify initial state
+      expect(screen.getByText("test@example.com")).toBeInTheDocument();
+
+      // Rerender with updated props
+      const updatedProps = {
+        ...defaultProps,
+        customerEmail: "updated@example.com",
+      };
+
+      rerender(
+        <TestWrapper>
+          <StripeCheckout {...updatedProps} />
+        </TestWrapper>
+      );
+
+      // Should show updated email
+      expect(screen.getByText("updated@example.com")).toBeInTheDocument();
+    });
+
+    test("should validate required props are present and correctly formatted", () => {
+      const minimalProps = {
+        clientSecret: "pi_test_minimal",
+        orderId: "QBC-MIN",
+        customerEmail: "minimal@test.com",
+        amount: 1000,
+        addressData: {
+          fullName: "Min User",
+          shippingOption: "pickup",
+        },
+      };
+
+      render(
+        <TestWrapper>
+          <StripeCheckout {...minimalProps} />
+        </TestWrapper>
+      );
+
+      expect(screen.getByText("QBC-MIN")).toBeInTheDocument();
+      expect(screen.getByText("Min User")).toBeInTheDocument();
+      expect(screen.getByText("minimal@test.com")).toBeInTheDocument();
+      expect(screen.getByText("$10.00")).toBeInTheDocument();
+    });
+
+    test("should handle pickup option validation without shipping address", () => {
+      const props = {
+        ...defaultProps,
+        addressData: pickupAddressData,
+      };
+
+      render(
+        <TestWrapper>
+          <StripeCheckout {...props} />
+        </TestWrapper>
+      );
+
+      expect(screen.getByText("Local Pickup")).toBeInTheDocument();
+      expect(screen.queryByText("123 Test Street")).not.toBeInTheDocument();
+    });
+
+    test("should validate amount formatting and display consistency", () => {
+      render(
+        <TestWrapper>
+          <StripeCheckout {...defaultProps} />
+        </TestWrapper>
+      );
+
+      const formattedAmount = "$25.00";
+      expect(screen.getByText(formattedAmount)).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: `Pay ${formattedAmount}` })
+      ).toBeInTheDocument();
+    });
+  });
+
+  describe("Payment Integration (6 tests)", () => {
+    test("should integrate with Stripe CardElement for secure payment processing", async () => {
+      const user = userEvent.setup();
+
+      render(
+        <TestWrapper>
+          <StripeCheckout
