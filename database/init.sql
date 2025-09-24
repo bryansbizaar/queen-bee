@@ -62,9 +62,9 @@ CREATE INDEX IF NOT EXISTS idx_order_items_order ON order_items(order_id);
 CREATE INDEX IF NOT EXISTS idx_customers_email ON customers(email);
 
 -- Insert initial Queen Bee Candles products
+-- Use INSERT without ON CONFLICT for simpler setup
 INSERT INTO products (title, description, price, image, category, stock_quantity, is_active) VALUES
 ('Dragon', 'Majestic dragon-shaped beeswax candle, hand-crafted with intricate details', 1500, 'dragon.jpg', 'candles', 15, true),
 ('Corn Cob', 'Rustic corn cob candle made from pure beeswax, perfect for country decor', 1600, 'corn-cob.jpg', 'candles', 12, true),
 ('Bee and Flower', 'Delicate bee and flower design, symbolizing nature''s harmony', 850, 'bee-and-flower.jpg', 'candles', 18, true),
-('Rose', 'Elegant rose-shaped candle with natural beeswax fragrance', 800, 'rose.jpg', 'candles', 20, true)
-ON CONFLICT (title) DO NOTHING;
+('Rose', 'Elegant rose-shaped candle with natural beeswax fragrance', 800, 'rose.jpg', 'candles', 20, true);
