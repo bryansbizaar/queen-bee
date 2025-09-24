@@ -35,11 +35,11 @@ jobs:
           node-version: '20'
       
       - name: Install client dependencies
-        working-directory: ./queen-bee/client
+        working-directory: ./client
         run: npm install
         
       - name: Install server dependencies
-        working-directory: ./queen-bee/server
+        working-directory: ./server
         run: npm install
       
       - name: Set server test environment variables
@@ -54,16 +54,16 @@ jobs:
       
       - name: Setup database schema (using proper SQL file)
         run: |
-          PGPASSWORD=testpassword psql -h localhost -U bryanowens -d queen_bee_test -f queen-bee/database/init.sql
+          PGPASSWORD=testpassword psql -h localhost -U bryanowens -d queen_bee_test -f database/init.sql
         
       - name: Run client tests
-        working-directory: ./queen-bee/client
-        run: npm run test:run
+        working-directory: ./client
+        run: npm test
         
       - name: Run server tests
-        working-directory: ./queen-bee/server
+        working-directory: ./server
         run: npm test
         
       - name: Build client
-        working-directory: ./queen-bee/client
+        working-directory: ./client
         run: npm run build
