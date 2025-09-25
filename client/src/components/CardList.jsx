@@ -11,7 +11,7 @@ const CardList = () => {
     const fetchProducts = async () => {
       try {
         // Fetch from your API endpoint
-        const response = await fetch("http://localhost:8080/api/products");
+        const response = await fetch("/api/products");
 
         if (!response.ok) {
           throw new Error("Failed to fetch products");

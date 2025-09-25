@@ -6,7 +6,7 @@ A professional e-commerce platform for handcrafted beeswax candles, showcasing m
 
 This full-stack e-commerce application demonstrates complete product lifecycle management - from browsing beautiful handcrafted candles to secure payment processing. Built with React, Node.js, PostgreSQL, and Stripe integration, it showcases production-ready development practices that businesses can trust.
 
-**Live Features**: Product catalog, shopping cart, secure checkout, order management, and inventory tracking.
+**Live Features**: Product catalog, shopping cart, secure checkout, order management, inventory tracking, and customer contact form with email notifications.
 
 ---
 
@@ -74,6 +74,7 @@ This project demonstrates the kind of **reliable, scalable, and maintainable** s
 - `GET /api/products` - Product catalog
 - `POST /api/orders` - Order management
 - `POST /api/stripe/*` - Payment processing
+- `POST /api/contact` - Contact form submission
 - `GET /images/*` - Static asset delivery
 
 ---
