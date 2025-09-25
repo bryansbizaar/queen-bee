@@ -1,7 +1,6 @@
-// import EmailService from '../services/EmailService.js';
+import EmailService from '../services/EmailService.js';
 
 class ContactController {
-  
   async submitContactForm(req, res) {
     try {
       const { name, email, subject, message } = req.body;
@@ -48,12 +47,17 @@ class ContactController {
         });
       }
 
-      // TODO: Send email (temporarily disabled - will re-enable once server is stable)
-      console.log(`📧 Contact form submitted from: ${sanitizedData.email}, Subject: ${sanitizedData.subject}`);
+      // Send email
+      await EmailService.sendContactEmail(sanitizedData);
+
+      // Log successful contact form submission (without sensitive data)
+      console.log(
+        `📧 Contact form submitted successfully from: ${sanitizedData.email}, Subject: ${sanitizedData.subject}`
+      );
 
       res.status(200).json({
         success: true,
-        message: 'Your message has been received! We\'ll get back to you within 24 hours.'
+        message: 'Your message has been sent successfully! We\'ll get back to you within 24 hours.'
       });
 
     } catch (error) {
@@ -68,8 +72,10 @@ class ContactController {
   // Health check for email service
   async checkEmailService(req, res) {
     try {
+      const isConnected = await EmailService.verifyConnection();
+      
       res.status(200).json({
-        emailService: 'temporarily disabled - fixing server issues',
+        emailService: isConnected ? 'connected' : 'disconnected',
         timestamp: new Date().toISOString()
       });
     } catch (error) {

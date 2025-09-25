@@ -3,7 +3,7 @@ import nodemailer from 'nodemailer';
 class EmailService {
   constructor() {
     // Create transporter using Gmail SMTP
-    this.transporter = nodemailer.createTransporter({
+    this.transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
         user: process.env.EMAIL_USER, // queenbcandlesnz@gmail.com
