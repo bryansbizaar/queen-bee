@@ -86,7 +86,7 @@ const PaymentSuccess = () => {
           <div className="order-details-row">
             <span className="order-details-label">Amount:</span>
             <span className="order-details-value">
-              {formatAmount(paymentData.amount * 100)}
+              {formatAmount(paymentData.amount)}
             </span>
           </div>
 

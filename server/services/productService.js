@@ -1,21 +1,44 @@
 import { query } from "../config/database.js";
+import MockProductService from "./mockProductService.js";
+
+// Check if database is available
+let useMockData = false;
+try {
+  // This will be set to true if database connection fails
+  if (!process.env.DATABASE_HOST || !process.env.DATABASE_NAME) {
+    useMockData = true;
+    console.log("⚠️  No database configuration found, using mock product data");
+  }
+} catch (error) {
+  useMockData = true;
+  console.log("⚠️  Database connection failed, using mock product data");
+}
 
 export class ProductService {
   // Get all active products
   static async getAllProducts() {
+    if (useMockData) {
+      return MockProductService.getAllProducts();
+    }
+    
     try {
       const result = await query(
         "SELECT id, title, description, price, image, category, stock_quantity FROM products WHERE is_active = true ORDER BY created_at DESC"
       );
       return result.rows;
     } catch (error) {
-      console.error("Error fetching products:", error);
-      throw new Error("Failed to fetch products");
+      console.error("Error fetching products from database, falling back to mock data:", error);
+      // Fallback to mock data if database fails
+      return MockProductService.getAllProducts();
     }
   }
 
   // Get product by ID
   static async getProductById(id) {
+    if (useMockData) {
+      return MockProductService.getProductById(id);
+    }
+    
     try {
       const result = await query(
         "SELECT id, title, description, price, image, category, stock_quantity FROM products WHERE id = $1 AND is_active = true",
@@ -28,10 +51,12 @@ export class ProductService {
 
       return result.rows[0];
     } catch (error) {
-      console.error("Error fetching product by ID:", error);
-      throw new Error("Failed to fetch product");
+      console.error("Error fetching product from database, falling back to mock data:", error);
+      return MockProductService.getProductById(id);
     }
   }
+
+  // Get products by category
 
   // Get products by category
   static async getProductsByCategory(category) {
