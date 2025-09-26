@@ -218,9 +218,11 @@ const Cart = () => {
       <div className="cart-empty">
         <h2>Your cart is empty</h2>
         <p>Looks like you haven&apos;t added anything to your cart yet.</p>
-        <Link to="/" className="cart-empty-link">
-          Continue Shopping
-        </Link>
+        <div className="action-buttons">
+          <Link to="/" className="action-button action-button-primary">
+            Continue Shopping
+          </Link>
+        </div>
       </div>
     );
   }
@@ -229,9 +231,14 @@ const Cart = () => {
   if (step === "payment" && clientSecret) {
     return (
       <div className="cart-container">
-        <button onClick={handleBackToAddress} className="cart-back-btn">
-          ← Back to Address
-        </button>
+        <div className="action-buttons" style={{ marginBottom: '1.5rem' }}>
+          <Link to="/" className="action-button action-button-secondary">
+            Continue Shopping
+          </Link>
+          <button onClick={handleBackToAddress} className="action-button action-button-secondary">
+            ← Back to Address
+          </button>
+        </div>
         <Elements stripe={stripePromise} options={{ locale: "en" }}>
           <StripeCheckout
             clientSecret={clientSecret}
@@ -249,9 +256,11 @@ const Cart = () => {
   if (step === "address") {
     return (
       <div className="cart-address-container">
-        <button onClick={handleBackToReview} className="cart-back-btn">
-          ← Back to Cart Review
-        </button>
+        <div className="action-buttons" style={{ marginBottom: '1.5rem' }}>
+          <button onClick={handleBackToReview} className="action-button action-button-secondary">
+            ← Back to Cart Review
+          </button>
+        </div>
 
         <h2 className="cart-title">Shipping & Billing Details</h2>
 
@@ -420,12 +429,15 @@ const Cart = () => {
           </div>
         )}
 
-            <div className="cart-actions">
+            <div className="action-buttons">
+              <Link to="/" className="action-button action-button-secondary">
+                Continue Shopping
+              </Link>
               <button
                 type="submit"
                 disabled={loading}
-                className={`cart-proceed-btn ${
-                  loading ? "disabled" : "active"
+                className={`action-button ${
+                  loading ? "action-button-secondary" : "action-button-primary"
                 }`}
               >
                 {loading ? "Processing..." : "Continue to Payment"}
@@ -557,13 +569,13 @@ const Cart = () => {
             </div>
           )}
 
-          <div className="cart-actions">
-            <Link to="/" className="cart-continue-shopping">
+          <div className="action-buttons">
+            <Link to="/" className="action-button action-button-secondary">
               Continue Shopping
             </Link>
             <button
               type="submit"
-              className="cart-proceed-btn active"
+              className="action-button action-button-primary"
             >
               Continue to Shipping Details
             </button>

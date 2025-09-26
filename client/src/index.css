@@ -1170,6 +1170,7 @@ body {
   display: flex;
   gap: 1rem;
   justify-content: center;
+  margin-top: 1.5rem;
 }
 
 .action-button {
@@ -1179,14 +1180,43 @@ body {
   border-radius: 0.375rem;
   text-decoration: none;
   font-weight: bold;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .action-button-primary {
   background-color: #4f46e5;
 }
 
+.action-button-primary:hover {
+  background-color: #3730a3;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
 .action-button-secondary {
   background-color: #6b7280;
+}
+
+.action-button-secondary:hover {
+  background-color: #4b5563;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.action-button:disabled {
+  background-color: #9ca3af !important;
+  color: white !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.action-button:disabled:hover {
+  background-color: #9ca3af !important;
+  transform: none !important;
+  box-shadow: none !important;
 }
 
 .contact-info {
@@ -1217,13 +1247,6 @@ body {
 .cart-empty {
   text-align: center;
   padding: 2rem;
-}
-
-.cart-empty-link {
-  display: inline-block;
-  margin-top: 1rem;
-  color: #4f46e5;
-  text-decoration: none;
 }
 
 .cart-items {
@@ -1385,52 +1408,6 @@ body {
   border-radius: 0.25rem;
   border: 1px solid #fecaca;
   font-size: 0.9rem;
-}
-
-.cart-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-}
-
-.cart-continue-shopping {
-  color: #6b7280;
-  text-decoration: none;
-  padding: 0.75rem 1.5rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.25rem;
-  font-weight: bold;
-}
-
-.cart-proceed-btn {
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.25rem;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.cart-proceed-btn.active {
-  background-color: #4f46e5;
-  color: white;
-}
-
-.cart-proceed-btn.disabled {
-  background-color: #9ca3af;
-  color: white;
-  cursor: not-allowed;
-}
-
-.cart-back-btn {
-  background-color: #f3f4f6;
-  border: 1px solid #d1d5db;
-  padding: 0.5rem 1rem;
-  border-radius: 0.25rem;
-  cursor: pointer;
-  margin-bottom: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
 }
 
 /* Address collection - simplified */
