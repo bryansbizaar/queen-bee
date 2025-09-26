@@ -13,6 +13,8 @@ const contactFormLimiter = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
+  // Skip rate limiting in test environment
+  skip: (req) => process.env.NODE_ENV === 'test' || process.env.DISABLE_RATE_LIMITING === 'true',
 });
 
 // POST /api/contact - Submit contact form
