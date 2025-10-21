@@ -78,4 +78,16 @@ This project demonstrates the kind of **reliable, scalable, and maintainable** s
 
 ---
 
-_Showcasing professional web development with modern technologies, comprehensive testing, and production-ready architecture._# Testing CI pipeline fix
+## 📚 Documentation
+
+- **[CLAUDE.md](CLAUDE.md)** - Complete project context for AI assistants
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** - System architecture and design decisions
+- **[API.md](API.md)** - Comprehensive API documentation
+- **[DEPLOYMENT.md](DEPLOYMENT.md)** - Production deployment guide
+- **[CHANGELOG.md](CHANGELOG.md)** - Version history and release notes
+- **[DEV-SETUP.md](DEV-SETUP.md)** - Development environment setup
+- **[.env.example](server/.env.example)** - Environment configuration templates
+
+---
+
+_Showcasing professional web development with modern technologies, comprehensive testing, and production-ready architecture._
