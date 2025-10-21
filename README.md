@@ -37,6 +37,18 @@ This full-stack e-commerce application demonstrates complete product lifecycle m
 
 ## 🚀 Quick Start
 
+### New Feature: Shipping Calculator 📦
+
+**Real-time NZ Post shipping calculation is now ready to implement!**  
+👉 **[Get Started: SHIPPING-CALCULATOR.md](./SHIPPING-CALCULATOR.md)**
+
+- Calculate accurate shipping costs at checkout
+- Automatic rural delivery detection
+- Multiple delivery options (standard, express, courier)
+- Packaging-aware dimension calculations
+
+### Standard Setup
+
 ```bash
 # Start PostgreSQL with Docker
 docker run --name postgres-db -e POSTGRES_PASSWORD=yourpassword -p 5432:5432 -d postgres

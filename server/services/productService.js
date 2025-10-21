@@ -18,7 +18,7 @@ export class ProductService {
   static async getProductById(id) {
     try {
       const result = await query(
-        "SELECT id, title, description, price, image, category, stock_quantity FROM products WHERE id = $1 AND is_active = true",
+        "SELECT id, title, description, price, image, category, stock_quantity, weight_kg, length_mm, width_mm, height_mm FROM products WHERE id = $1 AND is_active = true",
         [id]
       );
 
@@ -30,6 +30,20 @@ export class ProductService {
     } catch (error) {
       console.error("Error fetching product by ID:", error);
       throw new Error("Failed to fetch product");
+    }
+  }
+
+  // Get multiple products by IDs (for shipping calculation)
+  static async getByIds(ids) {
+    try {
+      const result = await query(
+        "SELECT id, title, description, price, image, category, stock_quantity, weight_kg, length_mm, width_mm, height_mm FROM products WHERE id = ANY($1) AND is_active = true",
+        [ids]
+      );
+      return result.rows;
+    } catch (error) {
+      console.error("Error fetching products by IDs:", error);
+      throw new Error("Failed to fetch products");
     }
   }
 

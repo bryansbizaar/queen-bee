@@ -403,10 +403,14 @@ const Cart = () => {
             )}
 
             {error && (
-          <div className="cart-error-message" role="alert" aria-live="assertive">
-            {error}
-          </div>
-        )}
+              <div
+                className="cart-error-message"
+                role="alert"
+                aria-live="assertive"
+              >
+                {error}
+              </div>
+            )}
 
             <div className="cart-actions">
               <button
@@ -430,7 +434,12 @@ const Cart = () => {
   return (
     <div className="cart-container">
       {/* Live region for cart updates */}
-      <div aria-live="polite" aria-atomic="true" className="sr-only" id="cart-status">
+      <div
+        aria-live="polite"
+        aria-atomic="true"
+        className="sr-only"
+        id="cart-status"
+      >
         {/* Screen readers will announce cart changes */}
       </div>
       <h2 className="cart-title">Your Cart</h2>
@@ -452,7 +461,11 @@ const Cart = () => {
             </div>
 
             <div className="cart-item-controls">
-              <div className="cart-item-quantity" role="group" aria-label={`Quantity for ${item.title}`}>
+              <div
+                className="cart-item-quantity"
+                role="group"
+                aria-label={`Quantity for ${item.title}`}
+              >
                 <button
                   onClick={() => updateQuantity(item.id, item.quantity - 1)}
                   className="cart-quantity-btn"
@@ -461,7 +474,9 @@ const Cart = () => {
                 >
                   -
                 </button>
-                <span aria-label={`Current quantity: ${item.quantity}`}>{item.quantity}</span>
+                <span aria-label={`Current quantity: ${item.quantity}`}>
+                  {item.quantity}
+                </span>
                 <button
                   onClick={() => updateQuantity(item.id, item.quantity + 1)}
                   className="cart-quantity-btn"
@@ -539,7 +554,11 @@ const Cart = () => {
         </div>
 
         {error && (
-          <div className="cart-error-message" role="alert" aria-live="assertive">
+          <div
+            className="cart-error-message"
+            role="alert"
+            aria-live="assertive"
+          >
             {error}
           </div>
         )}

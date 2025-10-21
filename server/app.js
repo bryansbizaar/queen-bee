@@ -6,6 +6,7 @@ import { fileURLToPath } from "url";
 import productsRouter from "./routes/product.routes.js";
 import stripeRouter from "./routes/stripe.routes.js";
 import orderRouter from "./routes/order.routes.js";
+import shippingRouter from "./routes/shipping.routes.js";
 import { globalErrorHandler, notFoundHandler } from "./middleware/errorHandler.js";
 
 dotenv.config();
@@ -28,6 +29,7 @@ app.use("/images", express.static(path.join(__dirname, "public/images")));
 app.use("/api/products", productsRouter);
 app.use("/api/stripe", stripeRouter);
 app.use("/api/orders", orderRouter);
+app.use("/api/shipping", shippingRouter);
 
 // Basic route for testing
 app.get("/", (req, res) => {
