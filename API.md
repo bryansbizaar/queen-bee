@@ -15,6 +15,7 @@
 - [Rate Limiting](#rate-limiting)
 - [Products API](#products-api)
 - [Orders API](#orders-api)
+- [Shipping API](#shipping-api)
 - [Stripe Payment API](#stripe-payment-api)
 - [Static Assets](#static-assets)
 
@@ -684,6 +685,191 @@ Retrieve order statistics for a date range.
   "error": "Start date must be before end date"
 }
 ```
+
+---
+
+## Shipping API
+
+### Calculate Shipping Rates
+
+Calculate shipping costs based on cart items and delivery postcode.
+
+**Endpoint**: `POST /api/shipping/calculate`
+
+**Request Body**:
+```json
+{
+  "items": [
+    {
+      "id": 1,
+      "quantity": 2
+    }
+  ],
+  "postcode": "0110"
+}
+```
+
+**Response**: `200 OK`
+```json
+{
+  "status": "success",
+  "isRural": false,
+  "isFallback": true,
+  "options": [
+    {
+      "id": "FALLBACK_STANDARD",
+      "service": "standard",
+      "description": "Standard Delivery (Estimated)",
+      "cost": 8.00,
+      "estimatedDays": "3-5 business days",
+      "recommended": true
+    }
+  ]
+}
+```
+
+**With NZ Post API Key** (multiple options):
+```json
+{
+  "status": "success",
+  "isRural": false,
+  "isFallback": false,
+  "options": [
+    {
+      "id": "STANDARD",
+      "service": "standard",
+      "description": "Standard Delivery",
+      "cost": 8.50,
+      "estimatedDays": "3-5 business days",
+      "recommended": true
+    },
+    {
+      "id": "EXPRESS",
+      "service": "express",
+      "description": "Express Delivery",
+      "cost": 15.00,
+      "estimatedDays": "1-2 business days",
+      "recommended": false
+    },
+    {
+      "id": "COURIER",
+      "service": "courier",
+      "description": "Courier Delivery",
+      "cost": 20.00,
+      "estimatedDays": "Next business day",
+      "recommended": false
+    }
+  ]
+}
+```
+
+**Rural Delivery**:
+```json
+{
+  "status": "success",
+  "isRural": true,
+  "isFallback": true,
+  "options": [
+    {
+      "id": "FALLBACK_RURAL",
+      "service": "rural",
+      "description": "Rural Delivery (Estimated)",
+      "cost": 12.00,
+      "estimatedDays": "5-7 business days",
+      "recommended": true
+    }
+  ]
+}
+```
+
+**Validation**:
+- `items` (required, non-empty array)
+  - Each item must have `id` (integer) and `quantity` (positive integer)
+- `postcode` (required, string): 4-digit NZ postcode matching `/^\d{4}$/`
+
+**Notes**:
+- Prices are in NZD dollars (not cents)
+- `isFallback: true` indicates estimated rates (no NZ Post API key configured)
+- `isFallback: false` indicates real-time NZ Post rates
+- Rural detection: postcodes starting with 7, 8, or 9
+- Packaging buffer automatically added (50g weight, 20mm padding per side)
+
+**Error Responses**:
+
+`400 Bad Request` - Missing items
+```json
+{
+  "status": "failure",
+  "error": "Items array required",
+  "message": "Please provide cart items to calculate shipping"
+}
+```
+
+`400 Bad Request` - Missing postcode
+```json
+{
+  "status": "failure",
+  "error": "Postcode required",
+  "message": "Please provide a delivery postcode"
+}
+```
+
+`400 Bad Request` - Invalid postcode format
+```json
+{
+  "status": "failure",
+  "error": "Invalid postcode format",
+  "message": "Postcode must be 4 digits (e.g., 6011)"
+}
+```
+
+`400 Bad Request` - Invalid items format
+```json
+{
+  "status": "failure",
+  "error": "Invalid items format",
+  "message": "Each item must have id (integer) and quantity (positive integer)"
+}
+```
+
+`500 Internal Server Error` - Calculation failed
+```json
+{
+  "status": "failure",
+  "error": "Failed to calculate shipping",
+  "message": "An unexpected error occurred"
+}
+```
+
+---
+
+### Test Shipping Service
+
+Health check endpoint to verify shipping service configuration.
+
+**Endpoint**: `GET /api/shipping/test`
+
+**Response**: `200 OK`
+```json
+{
+  "status": "success",
+  "message": "Shipping API is operational",
+  "config": {
+    "hasApiKey": false,
+    "sourcePostcode": "0110",
+    "packagingWeight": "0.05",
+    "paddingPerSide": "20"
+  }
+}
+```
+
+**Configuration Details**:
+- `hasApiKey`: Whether NZ Post API key is configured
+- `sourcePostcode`: Origin postcode for shipping calculations
+- `packagingWeight`: Weight added for packaging (kg)
+- `paddingPerSide`: Padding added per dimension (mm)
+
+**Note**: This endpoint is useful for verifying the shipping service is running and checking configuration without making actual shipping calculations.
 
 ---
 

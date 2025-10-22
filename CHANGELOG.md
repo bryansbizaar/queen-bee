@@ -10,22 +10,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Shipping Calculator Feature**
+  - Real-time shipping cost calculation integrated into checkout flow
+  - NZ Post API integration with fallback rates for development
+  - Automatic rural delivery detection based on postcode
+  - Support for multiple delivery options (standard, express, courier)
+  - Packaging-aware calculations (automatic weight and dimension buffers)
+  - Product dimension tracking in database (migration script included)
+  - ShippingCalculator React component with auto-calculation
+  - Backend shipping service with validation and error handling
+  - Comprehensive shipping API endpoints (`/api/shipping/calculate`, `/api/shipping/test`)
+  - Complete documentation in SHIPPING-CALCULATOR.md
 - Comprehensive documentation suite
   - CLAUDE.md for AI assistant context and project overview
   - ARCHITECTURE.md for system design and technical decisions
-  - API.md for complete API endpoint documentation
+  - API.md for complete API endpoint documentation (updated with shipping endpoints)
   - DEPLOYMENT.md for production deployment guide
   - Enhanced testing strategy with detailed implementation priorities
 - Environment configuration templates
-  - server/.env.example with detailed comments
+  - server/.env.example with detailed comments including shipping config
   - client/.env.example with Vite-specific guidance
 - Business context and development philosophy documentation
 - Detailed testing requirements with NZ-specific considerations
 
 ### Changed
-- README.md updated with documentation index
+- README.md updated with documentation index and shipping calculator feature
+- API.md updated with Shipping API section
+- Cart checkout flow enhanced to include shipping cost calculation
+- Database schema extended with product dimensions (weight_kg, length_mm, width_mm, height_mm)
 - Consolidated documentation from /docs folder into root-level files
 - Enhanced testing documentation with coverage targets and benchmarks
+
+### Fixed
+- Database connection properly configured (removed accidental command from .env)
+- ShippingCalculator infinite render loop resolved with useRef
+- React Hook dependency warnings resolved with useCallback
+- Test configuration updated (Jest and Vitest) for proper test discovery
+- CI/CD pipeline fixed to run tests from correct directories
 
 ---
 
