@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
 
 export default function ShippingCalculator({
@@ -13,17 +13,7 @@ export default function ShippingCalculator({
   const [isRural, setIsRural] = useState(false);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    // Auto-calculate when postcode is valid
-    if (postcode.length === 4 && /^\d{4}$/.test(postcode)) {
-      calculateShipping();
-    } else {
-      setOptions([]);
-      setSelectedOption(null);
-    }
-  }, [postcode, cartItems]);
-
-  const calculateShipping = async () => {
+  const calculateShipping = useCallback(async () => {
     setLoading(true);
     setError("");
 
@@ -62,7 +52,17 @@ export default function ShippingCalculator({
     } finally {
       setLoading(false);
     }
-  };
+  }, [cartItems, postcode, onShippingSelected, onError]);
+
+  useEffect(() => {
+    // Auto-calculate when postcode is valid
+    if (postcode.length === 4 && /^\d{4}$/.test(postcode)) {
+      calculateShipping();
+    } else {
+      setOptions([]);
+      setSelectedOption(null);
+    }
+  }, [postcode, cartItems, calculateShipping]);
 
   const handleOptionSelect = (option) => {
     setSelectedOption(option);
