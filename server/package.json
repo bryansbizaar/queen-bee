@@ -7,10 +7,10 @@
     "start": "node server.js",
     "dev": "nodemon server.js --port 8080",
     "debug": "nodemon --inspect server.js",
-    "test": "NODE_ENV=test NODE_OPTIONS='--experimental-vm-modules --no-warnings' jest simple-tests",
+    "test": "NODE_ENV=test NODE_OPTIONS='--experimental-vm-modules --no-warnings' jest tests",
     "test:watch": "NODE_ENV=test jest --watch",
     "test:coverage": "NODE_ENV=test jest --coverage",
-    "test:api": "NODE_ENV=test jest simple-tests",
+    "test:api": "NODE_ENV=test jest tests",
     "test:services": "NODE_ENV=test jest tests/services",
     "test:debug": "NODE_ENV=test DEBUG_TESTS=true jest --verbose",
     "test:ci": "NODE_ENV=test jest --ci --coverage --watchAll=false"
