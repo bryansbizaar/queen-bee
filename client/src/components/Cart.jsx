@@ -91,6 +91,18 @@ const Cart = () => {
     }
   };
 
+  // Handle form submission (Enter key anywhere in the form)
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    handleProceedToAddress();
+  };
+
+  // Handle address form submission (Enter key in address form)
+  const handleAddressFormSubmit = (e) => {
+    e.preventDefault();
+    handleProceedToPayment();
+  };
+
   const handleAddressChange = (field, value) => {
     let processedValue = value;
 
@@ -206,9 +218,11 @@ const Cart = () => {
       <div className="cart-empty">
         <h2>Your cart is empty</h2>
         <p>Looks like you haven&apos;t added anything to your cart yet.</p>
-        <Link to="/" className="cart-empty-link">
-          Continue Shopping
-        </Link>
+        <div className="action-buttons">
+          <Link to="/" className="action-button action-button-primary">
+            Continue Shopping
+          </Link>
+        </div>
       </div>
     );
   }
@@ -217,9 +231,14 @@ const Cart = () => {
   if (step === "payment" && clientSecret) {
     return (
       <div className="cart-container">
-        <button onClick={handleBackToAddress} className="cart-back-btn">
-          ← Back to Address
-        </button>
+        <div className="action-buttons" style={{ marginBottom: '1.5rem' }}>
+          <Link to="/" className="action-button action-button-secondary">
+            Continue Shopping
+          </Link>
+          <button onClick={handleBackToAddress} className="action-button action-button-secondary">
+            ← Back to Address
+          </button>
+        </div>
         <Elements stripe={stripePromise} options={{ locale: "en" }}>
           <StripeCheckout
             clientSecret={clientSecret}
@@ -237,9 +256,11 @@ const Cart = () => {
   if (step === "address") {
     return (
       <div className="cart-address-container">
-        <button onClick={handleBackToReview} className="cart-back-btn">
-          ← Back to Cart Review
-        </button>
+        <div className="action-buttons" style={{ marginBottom: '1.5rem' }}>
+          <button onClick={handleBackToReview} className="action-button action-button-secondary">
+            ← Back to Cart Review
+          </button>
+        </div>
 
         <h2 className="cart-title">Shipping & Billing Details</h2>
 
@@ -248,7 +269,7 @@ const Cart = () => {
             Email: <strong>{customerEmail}</strong>
           </p>
 
-          <form className="cart-address-form">
+          <form className="cart-address-form" onSubmit={handleAddressFormSubmit}>
             {/* Full Name */}
             <div className="cart-form-group">
               <label className="cart-form-label">Full Name *</label>
@@ -412,13 +433,15 @@ const Cart = () => {
               </div>
             )}
 
-            <div className="cart-actions">
+            <div className="action-buttons">
+              <Link to="/" className="action-button action-button-secondary">
+                Continue Shopping
+              </Link>
               <button
-                type="button"
-                onClick={handleProceedToPayment}
+                type="submit"
                 disabled={loading}
-                className={`cart-proceed-btn ${
-                  loading ? "disabled" : "active"
+                className={`action-button ${
+                  loading ? "action-button-secondary" : "action-button-primary"
                 }`}
               >
                 {loading ? "Processing..." : "Continue to Payment"}
@@ -508,72 +531,71 @@ const Cart = () => {
           <span>{formatAmount(getCartTotal())}</span>
         </div>
 
-        {/* Customer Email Input */}
-        <div className="cart-form-group">
-          <label htmlFor="customerEmail" className="cart-form-label">
-            Email Address *
-          </label>
-          <input
-            id="customerEmail"
-            type="email"
-            value={customerEmail}
-            onChange={handleEmailChange}
-            placeholder="Enter your email address"
-            className={`cart-email-input ${emailError ? "error" : ""}`}
-            onFocus={() => setEmailError("")}
-            aria-required="true"
-            aria-invalid={emailError ? "true" : "false"}
-            aria-describedby={emailError ? "email-error" : undefined}
-          />
-          {emailError && (
-            <span id="email-error" className="cart-error-text" role="alert">
-              {emailError}
-            </span>
-          )}
-        </div>
-
-        {/* Payment Method Selection */}
-        <div className="cart-form-group">
-          <label className="cart-form-label">Payment Method *</label>
-          <div className="cart-payment-methods">
-            <label
-              className={`cart-payment-option ${
-                paymentMethod === "stripe" ? "selected" : ""
-              }`}
-            >
-              <input
-                type="radio"
-                name="paymentMethod"
-                value="stripe"
-                checked={paymentMethod === "stripe"}
-                onChange={(e) => setPaymentMethod(e.target.value)}
-              />
-              <span>💳 Card Payment (Stripe)</span>
+        {/* Cart Review Form */}
+        <form onSubmit={handleFormSubmit}>
+          {/* Customer Email Input */}
+          <div className="cart-form-group">
+            <label htmlFor="customerEmail" className="cart-form-label">
+              Email Address *
             </label>
+            <input
+              id="customerEmail"
+              type="email"
+              value={customerEmail}
+              onChange={handleEmailChange}
+              placeholder="Enter your email address (press Enter to continue)"
+              className={`cart-email-input ${emailError ? "error" : ""}`}
+              onFocus={() => setEmailError("")}
+              aria-required="true"
+              aria-invalid={emailError ? "true" : "false"}
+              aria-describedby={emailError ? "email-error" : undefined}
+            />
+            {emailError && (
+              <span id="email-error" className="cart-error-text" role="alert">
+                {emailError}
+              </span>
+            )}
           </div>
-        </div>
 
-        {error && (
-          <div
-            className="cart-error-message"
-            role="alert"
-            aria-live="assertive"
-          >
-            {error}
+          {/* Payment Method Selection */}
+          <div className="cart-form-group">
+            <label className="cart-form-label">Payment Method *</label>
+            <div className="cart-payment-methods">
+              <label
+                className={`cart-payment-option ${
+                  paymentMethod === "stripe" ? "selected" : ""
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value="stripe"
+                  checked={paymentMethod === "stripe"}
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                />
+                <span>💳 Card Payment (Stripe)</span>
+              </label>
+            </div>
           </div>
-        )}
 
-        <div className="cart-actions">
-          <Link to="/" className="cart-continue-shopping">
-            Continue Shopping
-          </Link>
-          <button
-            onClick={handleProceedToAddress}
-            className="cart-proceed-btn active"
-          >
-            Continue to Shipping Details
-          </button>
-        </div>
+          {error && (
+            <div className="cart-error-message" role="alert" aria-live="assertive">
+              {error}
+            </div>
+          )}
+
+          <div className="action-buttons">
+            <Link to="/" className="action-button action-button-secondary">
+              Continue Shopping
+            </Link>
+            <button
+              type="submit"
+              className="action-button action-button-primary"
+            >
+              Continue to Shipping Details
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

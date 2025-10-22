@@ -101,8 +101,8 @@ router.post(
     try {
       const { amount, orderId, customerEmail, cartItems } = req.body;
 
-      // Convert amount to cents for Stripe
-      const amountInCents = Math.round(parseFloat(amount));
+      // Convert amount to cents for Stripe (multiply by 100)
+      const amountInCents = Math.round(parseFloat(amount) * 100);
 
       // Create payment intent with enhanced metadata
       const paymentIntent = await stripe.paymentIntents.create({

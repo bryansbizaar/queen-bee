@@ -4,9 +4,39 @@ A professional e-commerce platform for handcrafted beeswax candles, showcasing m
 
 ## 🎯 Overview
 
-This full-stack e-commerce application demonstrates complete product lifecycle management - from browsing beautiful handcrafted candles to secure payment processing. Built with React, Node.js, PostgreSQL, and Stripe integration, it showcases production-ready development practices that businesses can trust.
+This full-stack e-commerce application demonstrates complete product lifecycle management - from browsing beautiful handcrafted candles to secure payment processing. Built with React, Node.js, PostgreSQL, and Stripe integration.
 
-**Live Features**: Product catalog, shopping cart, secure checkout, order management, and inventory tracking.
+**Live Features**: Product catalog, shopping cart, secure checkout, order management, inventory tracking, and customer contact form with email notifications.
+
+## 📸 Screenshots
+
+<div align="center">
+
+### Homepage & Product Gallery
+
+<img src="screenshots/homepage.png" width="80%" alt="Queen Bee Candles Homepage">
+
+_Professional products with responsive grid layout_
+
+### Product Detail & Shopping Cart
+
+<img src="screenshots/product-detail.png" width="50%" alt="Product Detail Page"> <img src="screenshots/cart.png" width="44%" alt="Shopping Cart">
+
+_Individual product views and intuitive cart management_
+
+### Secure Checkout Process
+
+<img src="screenshots/checkout.png" width="60%" alt="Stripe Checkout Integration">
+
+_Professional payment processing with Stripe integration_
+
+### Mobile Responsive Design
+
+<img src="screenshots/mobile.png" width="40%" alt="Mobile Homepage">
+
+_Seamless experience across all devices_
+
+</div>
 
 ---
 
@@ -64,6 +94,49 @@ cd client && npm install && npm run dev
 
 ---
 
+## 🛠️ Customization Guide
+
+### **Adapting for Your Business**
+
+This application is designed to be easily customized for any e-commerce use case:
+
+**Product Configuration:**
+
+- Update `server/data/products.json` with your product catalog
+- Replace product images in `server/public/images/`
+- Modify product categories in `ProductsAPI.js`
+
+**Branding & Styling:**
+
+- Update company name, colors, and fonts in `client/src/styles/`
+- Replace logo and branding assets
+- Customize email templates in `server/controllers/ContactController.js`
+
+**Payment & Business Logic:**
+
+- Configure your Stripe keys in environment variables
+- Adjust tax rates and shipping logic in `OrderService.js`
+- Customize order confirmation emails
+
+**Environment Setup:**
+
+```bash
+# Copy example environment files
+cp server/.env.example server/.env
+cp client/.env.example client/.env
+
+# Configure your specific values
+# Database connection, Stripe keys, email settings, etc.
+```
+
+**Database Customization:**
+
+- Modify database schema in `server/database/`
+- Add custom product fields or order attributes
+- Update API endpoints to match your data structure
+
+---
+
 ## 🧪 Quality Assurance
 
 - **Full Test Coverage**: Server and client test suites with automated CI/CD validation
@@ -75,7 +148,7 @@ cd client && npm install && npm run dev
 
 ## 💼 Why This Matters
 
-This project demonstrates the kind of **reliable, scalable, and maintainable** software architecture that businesses need. From secure payment processing to accessibility compliance, every aspect reflects enterprise-level development practices.
+This project demonstrates **reliable, scalable, and maintainable** software architecture. From secure payment processing to accessibility compliance, every aspect reflects enterprise-level development practices.
 
 **Perfect for**: E-commerce platforms, small business websites, or any application requiring secure transactions and professional user experience.
 
@@ -86,6 +159,7 @@ This project demonstrates the kind of **reliable, scalable, and maintainable** s
 - `GET /api/products` - Product catalog
 - `POST /api/orders` - Order management
 - `POST /api/stripe/*` - Payment processing
+- `POST /api/contact` - Contact form submission
 - `GET /images/*` - Static asset delivery
 
 ---

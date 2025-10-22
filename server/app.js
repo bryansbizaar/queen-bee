@@ -7,6 +7,7 @@ import productsRouter from "./routes/product.routes.js";
 import stripeRouter from "./routes/stripe.routes.js";
 import orderRouter from "./routes/order.routes.js";
 import shippingRouter from "./routes/shipping.routes.js";
+import contactRouter from "./routes/contact.routes.js";
 import { globalErrorHandler, notFoundHandler } from "./middleware/errorHandler.js";
 
 dotenv.config();
@@ -30,6 +31,7 @@ app.use("/api/products", productsRouter);
 app.use("/api/stripe", stripeRouter);
 app.use("/api/orders", orderRouter);
 app.use("/api/shipping", shippingRouter);
+app.use("/api/contact", contactRouter);
 
 // Basic route for testing
 app.get("/", (req, res) => {
@@ -42,6 +44,14 @@ app.get("/api/health", (req, res) => {
     status: "OK", 
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV || "development"
+  });
+});
+
+// Debug route for contact testing
+app.get("/api/contact-test", (req, res) => {
+  res.json({ 
+    message: "Contact test route working", 
+    timestamp: new Date().toISOString()
   });
 });
 
