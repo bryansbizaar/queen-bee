@@ -1,19 +1,21 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import PropTypes from "prop-types";
 
 export default function ShippingCalculator({
   cartItems,
+  postcode,
   onShippingSelected,
   onError,
 }) {
-  const [postcode, setPostcode] = useState("");
   const [loading, setLoading] = useState(false);
   const [options, setOptions] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
   const [isRural, setIsRural] = useState(false);
   const [error, setError] = useState("");
+  const lastCalculatedRef = useRef("");
 
   const calculateShipping = useCallback(async () => {
+    console.log('[ShippingCalculator] Starting calculation for postcode:', postcode);
     setLoading(true);
     setError("");
 
@@ -33,9 +35,16 @@ export default function ShippingCalculator({
         }
       );
 
-      if (!response.ok) throw new Error("Failed to calculate shipping");
+      console.log('[ShippingCalculator] Response status:', response.status);
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('[ShippingCalculator] Error response:', errorData);
+        throw new Error(errorData.message || "Failed to calculate shipping");
+      }
 
       const data = await response.json();
+      console.log('[ShippingCalculator] Success data:', data);
       setOptions(data.options || []);
       setIsRural(data.isRural || false);
 
@@ -47,22 +56,28 @@ export default function ShippingCalculator({
         onShippingSelected(recommended);
       }
     } catch (err) {
+      console.error('[ShippingCalculator] Calculation error:', err);
       setError("Unable to calculate shipping. Please try again.");
       onError?.(err);
     } finally {
       setLoading(false);
+      console.log('[ShippingCalculator] Calculation complete');
     }
   }, [cartItems, postcode, onShippingSelected, onError]);
 
   useEffect(() => {
-    // Auto-calculate when postcode is valid
-    if (postcode.length === 4 && /^\d{4}$/.test(postcode)) {
+    // Auto-calculate when postcode is valid and hasn't been calculated yet
+    if (postcode.length === 4 && /^\d{4}$/.test(postcode) && lastCalculatedRef.current !== postcode) {
+      console.log('[ShippingCalculator] Triggering calculation');
+      lastCalculatedRef.current = postcode;
       calculateShipping();
-    } else {
+    } else if (postcode.length !== 4) {
+      console.log('[ShippingCalculator] Invalid postcode, clearing options');
+      lastCalculatedRef.current = "";
       setOptions([]);
       setSelectedOption(null);
     }
-  }, [postcode, cartItems, calculateShipping]);
+  }, [postcode, calculateShipping]); // Removed cartItems from dependencies
 
   const handleOptionSelect = (option) => {
     setSelectedOption(option);
@@ -78,42 +93,7 @@ export default function ShippingCalculator({
         borderRadius: "8px",
       }}
     >
-      <h3>Shipping Address</h3>
-
-      <div style={{ marginBottom: "15px" }}>
-        <label
-          htmlFor="postcode"
-          style={{ display: "block", marginBottom: "5px", fontWeight: "600" }}
-        >
-          Postcode *
-        </label>
-        <input
-          id="postcode"
-          type="text"
-          value={postcode}
-          onChange={(e) => setPostcode(e.target.value.slice(0, 4))}
-          placeholder="e.g., 6011"
-          maxLength={4}
-          pattern="\d{4}"
-          required
-          style={{
-            width: "200px",
-            padding: "8px",
-            border: "1px solid #ddd",
-            borderRadius: "4px",
-          }}
-        />
-        <small
-          style={{
-            display: "block",
-            color: "#666",
-            fontSize: "12px",
-            marginTop: "4px",
-          }}
-        >
-          4-digit NZ postcode
-        </small>
-      </div>
+      <h3>Shipping Options</h3>
 
       {loading && (
         <div
@@ -122,13 +102,14 @@ export default function ShippingCalculator({
             background: "#f0f8ff",
             borderRadius: "4px",
             color: "#0066cc",
+            marginBottom: "15px",
           }}
         >
           Calculating shipping...
         </div>
       )}
 
-      {error && (
+      {!loading && error && (
         <div
           style={{
             padding: "10px",
@@ -141,7 +122,7 @@ export default function ShippingCalculator({
         </div>
       )}
 
-      {isRural && (
+      {!loading && isRural && (
         <div
           style={{
             padding: "8px 12px",
@@ -154,7 +135,7 @@ export default function ShippingCalculator({
         </div>
       )}
 
-      {options.length > 0 && (
+      {!loading && options.length > 0 && (
         <div style={{ marginTop: "20px" }}>
           <h4>Delivery Options</h4>
           {options.map((option) => (
@@ -215,6 +196,7 @@ ShippingCalculator.propTypes = {
       quantity: PropTypes.number,
     })
   ).isRequired,
+  postcode: PropTypes.string.isRequired,
   onShippingSelected: PropTypes.func,
   onError: PropTypes.func,
 };

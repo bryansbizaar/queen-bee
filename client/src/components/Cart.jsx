@@ -5,6 +5,7 @@ import { Elements } from "@stripe/react-stripe-js";
 import useCart from "../context/useCart";
 import formatAmount from "../utils/formatAmount";
 import StripeCheckout from "./StripeCheckout";
+import ShippingCalculator from "./ShippingCalculator";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
@@ -29,6 +30,10 @@ const Cart = () => {
     shippingOption: "ship", // "ship" or "pickup"
   });
   const [addressErrors, setAddressErrors] = useState({});
+  
+  // Shipping calculator state
+  const [selectedShipping, setSelectedShipping] = useState(null);
+  const [shippingError, setShippingError] = useState(null);
 
   const generateOrderId = () => {
     const timestamp = Date.now();
@@ -148,13 +153,21 @@ const Cart = () => {
       return;
     }
 
+    // Require shipping selection if shipping option is selected
+    if (addressData.shippingOption === "ship" && !selectedShipping) {
+      setError("Please select a shipping option");
+      return;
+    }
+
     if (paymentMethod === "stripe") {
       setLoading(true);
       setError(null);
 
       try {
         const newOrderId = generateOrderId();
-        const total = getCartTotal();
+        const subtotal = getCartTotal();
+        const shippingCost = addressData.shippingOption === "ship" && selectedShipping ? selectedShipping.cost * 100 : 0; // Convert to cents
+        const total = subtotal + shippingCost;
 
         const response = await fetch(
           "http://localhost:8080/api/stripe/create-payment-intent",
@@ -412,6 +425,29 @@ const Cart = () => {
                     )}
                   </div>
                 </div>
+
+                {/* Shipping Calculator - shows when postcode is entered */}
+                {addressData.postalCode.length === 4 && (
+                  <ShippingCalculator
+                    cartItems={cartItems}
+                    postcode={addressData.postalCode}
+                    onShippingSelected={(option) => {
+                      setSelectedShipping(option);
+                      setShippingError(null);
+                      setError(null);
+                    }}
+                    onError={(err) => {
+                      setShippingError(err.message || "Failed to calculate shipping");
+                      setSelectedShipping(null);
+                    }}
+                  />
+                )}
+
+                {shippingError && (
+                  <div className="cart-error-message" role="alert">
+                    {shippingError}
+                  </div>
+                )}
 
                 <div className="cart-shipping-note">
                   <p>
