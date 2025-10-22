@@ -67,18 +67,6 @@ _Seamless experience across all devices_
 
 ## 🚀 Quick Start
 
-### New Feature: Shipping Calculator 📦
-
-**Real-time NZ Post shipping calculation is now ready to implement!**  
-👉 **[Get Started: SHIPPING-CALCULATOR.md](./SHIPPING-CALCULATOR.md)**
-
-- Calculate accurate shipping costs at checkout
-- Automatic rural delivery detection
-- Multiple delivery options (standard, express, courier)
-- Packaging-aware dimension calculations
-
-### Standard Setup
-
 ```bash
 # Start PostgreSQL with Docker
 docker run --name postgres-db -e POSTGRES_PASSWORD=yourpassword -p 5432:5432 -d postgres
@@ -91,6 +79,8 @@ cd client && npm install && npm run dev
 ```
 
 **Prerequisites**: Node.js 18+, Docker, Stripe account
+
+**Features**: Product catalog, shopping cart, secure checkout with Stripe, shipping calculator with NZ Post integration, contact form with email notifications.
 
 ---
 
@@ -160,6 +150,8 @@ This project demonstrates **reliable, scalable, and maintainable** software arch
 - `POST /api/orders` - Order management
 - `POST /api/stripe/*` - Payment processing
 - `POST /api/contact` - Contact form submission
+- `POST /api/shipping/calculate` - Calculate shipping rates
+- `GET /api/shipping/test` - Shipping service health check
 - `GET /images/*` - Static asset delivery
 
 ---
