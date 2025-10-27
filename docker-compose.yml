@@ -1,0 +1,46 @@
+# Queen Bee Candles - Docker Compose for Local Development
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: queen-bee-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: queen_bee_candles
+      POSTGRES_USER: queenbee
+      POSTGRES_PASSWORD: development123
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5432:5432"
+    volumes:
+      # Persist data between container restarts
+      - postgres_data:/var/lib/postgresql/data
+      # Mount initialization script (we'll create this next)
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - queen-bee-network
+
+  # pgAdmin (Optional - Web-based PostgreSQL management)
+  # Uncomment if you want a GUI for database management
+  # pgadmin:
+  #   image: dpage/pgadmin4:latest
+  #   container_name: queen-bee-pgadmin
+  #   restart: unless-stopped
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: admin@queenbeecandles.com
+  #     PGADMIN_DEFAULT_PASSWORD: admin123
+  #   ports:
+  #     - "8081:80"
+  #   depends_on:
+  #     - postgres
+  #   networks:
+  #     - queen-bee-network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  queen-bee-network:
+    driver: bridge

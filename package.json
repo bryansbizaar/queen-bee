@@ -1,0 +1,35 @@
+{
+  "name": "queen-bee-fullstack",
+  "version": "1.0.0",
+  "description": "Queen Bee Candles - Full-stack e-commerce application",
+  "private": true,
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "scripts": {
+    "dev": "concurrently --names \"SERVER,CLIENT\" --prefix-colors \"blue,green\" \"npm run server\" \"npm run client\"",
+    "dev:test": "concurrently --names \"SERVER,CLIENT,TESTS\" --prefix-colors \"blue,green,yellow\" \"npm run server\" \"npm run client\" \"npm run test:watch\"",
+    "start": "concurrently \"npm run server:start\" \"npm run client:preview\"",
+    "client": "cd client && npm run dev",
+    "server": "cd server && npm run dev",
+    "server:start": "cd server && npm start",
+    "client:build": "cd client && npm run build",
+    "client:preview": "cd client && npm run preview",
+    "test": "cd client && npm run test:run",
+    "test:watch": "cd client && npm run test:watch",
+    "test:ui": "cd client && npm run test:ui",
+    "lint": "cd client && npm run lint",
+    "build": "npm run client:build",
+    "install:all": "npm install && cd client && npm install && cd ../server && npm install",
+    "clean": "rm -rf node_modules client/node_modules server/node_modules client/dist",
+    "validate": "node validate-setup.js",
+    "verify:contact": "node verify-contact-setup.js"
+  },
+  "dependencies": {
+    "lucide-react": "^0.509.0"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

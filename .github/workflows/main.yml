@@ -1,0 +1,88 @@
+name: Simple CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:  # Enables manual triggers
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_DB: queen_bee_test
+          POSTGRES_USER: bryanowens
+          POSTGRES_PASSWORD: testpassword
+        options: >-
+          --health-cmd="pg_isready -U bryanowens -d queen_bee_test"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install client dependencies
+        working-directory: ./client
+        run: npm install
+        
+      - name: Install server dependencies
+        working-directory: ./server
+        run: npm install
+      
+      - name: Set server test environment variables
+        run: |
+          echo "NODE_ENV=test" >> $GITHUB_ENV
+          echo "DATABASE_HOST=localhost" >> $GITHUB_ENV
+          echo "DATABASE_PORT=5432" >> $GITHUB_ENV
+          echo "DATABASE_NAME=queen_bee_test" >> $GITHUB_ENV
+          echo "DATABASE_USER=bryanowens" >> $GITHUB_ENV
+          echo "DATABASE_PASSWORD=testpassword" >> $GITHUB_ENV
+          echo "DATABASE_URL=postgres://bryanowens:testpassword@localhost:5432/queen_bee_test" >> $GITHUB_ENV
+          echo "STRIPE_SECRET_KEY=sk_test_mock_key_for_testing" >> $GITHUB_ENV
+          echo "STRIPE_PUBLISHABLE_KEY=pk_test_mock_key_for_testing" >> $GITHUB_ENV
+      
+      - name: Setup database schema (using proper SQL file)
+        run: |
+          PGPASSWORD=testpassword psql -h localhost -U bryanowens -d queen_bee_test -f database/init.sql
+          
+      - name: Start server in background
+        working-directory: ./server
+        run: |
+          npm start &
+          sleep 5
+        env:
+          NODE_ENV: test
+          DATABASE_HOST: localhost
+          DATABASE_PORT: 5432
+          DATABASE_NAME: queen_bee_test
+          DATABASE_USER: bryanowens
+          DATABASE_PASSWORD: testpassword
+          DATABASE_URL: postgres://bryanowens:testpassword@localhost:5432/queen_bee_test
+          STRIPE_SECRET_KEY: sk_test_mock_key_for_testing
+          STRIPE_PUBLISHABLE_KEY: pk_test_mock_key_for_testing
+        
+      - name: Run client tests
+        working-directory: ./client
+        run: npm test
+        
+      - name: Run server tests
+        working-directory: ./server
+        run: npm test
+        
+      - name: Build client
+        working-directory: ./client
+        run: npm run build
