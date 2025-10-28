@@ -7,7 +7,7 @@
     "start": "node server.js",
     "dev": "nodemon server.js --port 8080",
     "debug": "nodemon --inspect server.js",
-    "test": "NODE_ENV=test NODE_OPTIONS='--experimental-vm-modules --no-warnings' jest tests",
+    "test": "DATABASE_NAME=queen_bee_test NODE_ENV=test NODE_OPTIONS='--experimental-vm-modules --no-warnings' jest tests",
     "test:watch": "NODE_ENV=test jest --watch",
     "test:coverage": "NODE_ENV=test jest --coverage",
     "test:api": "NODE_ENV=test jest tests",

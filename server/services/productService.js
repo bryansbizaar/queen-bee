@@ -20,14 +20,17 @@ export class ProductService {
     if (useMockData) {
       return MockProductService.getAllProducts();
     }
-    
+
     try {
       const result = await query(
-        "SELECT id, title, description, price, image, category, stock_quantity FROM products WHERE is_active = true ORDER BY created_at DESC"
+        "SELECT id, title, description, price, image, category, stock_quantity FROM products WHERE is_active = true ORDER BY display_order ASC, id ASC"
       );
       return result.rows;
     } catch (error) {
-      console.error("Error fetching products from database, falling back to mock data:", error);
+      console.error(
+        "Error fetching products from database, falling back to mock data:",
+        error
+      );
       // Fallback to mock data if database fails
       return MockProductService.getAllProducts();
     }
@@ -38,7 +41,7 @@ export class ProductService {
     if (useMockData) {
       return MockProductService.getProductById(id);
     }
-    
+
     try {
       const result = await query(
         "SELECT id, title, description, price, image, category, stock_quantity, weight_kg, length_mm, width_mm, height_mm FROM products WHERE id = $1 AND is_active = true",
@@ -51,7 +54,10 @@ export class ProductService {
 
       return result.rows[0];
     } catch (error) {
-      console.error("Error fetching product from database, falling back to mock data:", error);
+      console.error(
+        "Error fetching product from database, falling back to mock data:",
+        error
+      );
       return MockProductService.getProductById(id);
     }
   }
@@ -76,7 +82,7 @@ export class ProductService {
   static async getProductsByCategory(category) {
     try {
       const result = await query(
-        "SELECT id, title, description, price, image, category, stock_quantity FROM products WHERE category = $1 AND is_active = true ORDER BY created_at DESC",
+        "SELECT id, title, description, price, image, category, stock_quantity FROM products WHERE category = $1 AND is_active = true ORDER BY display_order ASC, id ASC",
         [category]
       );
       return result.rows;

@@ -25,6 +25,8 @@ build/
 archive*/
 testing-archive*/
 *.backup
+docs/archive/
+scripts/
 
 # Logs
 logs

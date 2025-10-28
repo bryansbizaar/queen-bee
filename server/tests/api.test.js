@@ -1,7 +1,13 @@
 import request from 'supertest';
 import app from '../app.js';
+import { seedTestData } from './setup/testDatabase.js';
 
 describe('API Health Tests', () => {
+  // Seed known test data before running tests
+  beforeAll(async () => {
+    await seedTestData();
+  });
+
   describe('Products API', () => {
     test('GET /api/products returns products', async () => {
       const response = await request(app)
@@ -13,8 +19,15 @@ describe('API Health Tests', () => {
       expect(response.body.data).toHaveProperty('products');
       expect(Array.isArray(response.body.data.products)).toBe(true);
       
-      // Should have 4 candle products
+      // Should have the 4 core Queen Bee products from test seed data
       expect(response.body.data.products.length).toBe(4);
+      
+      // Verify we have the expected products
+      const titles = response.body.data.products.map(p => p.title);
+      expect(titles).toContain('Dragon');
+      expect(titles).toContain('Corn Cob');
+      expect(titles).toContain('Bee and Flower');
+      expect(titles).toContain('Rose');
     });
 
     test('Products have required fields', async () => {

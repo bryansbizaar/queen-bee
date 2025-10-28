@@ -11,6 +11,8 @@ CREATE TABLE IF NOT EXISTS products (
   category VARCHAR(100) DEFAULT 'candles',
   stock_quantity INTEGER DEFAULT 0,
   is_active BOOLEAN DEFAULT true,
+  is_featured BOOLEAN DEFAULT false,
+  display_order INTEGER DEFAULT 0,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -55,6 +57,8 @@ CREATE TABLE IF NOT EXISTS order_items (
 -- Create indexes for better performance
 CREATE INDEX IF NOT EXISTS idx_products_category ON products(category);
 CREATE INDEX IF NOT EXISTS idx_products_active ON products(is_active);
+CREATE INDEX IF NOT EXISTS idx_products_featured ON products(is_featured);
+CREATE INDEX IF NOT EXISTS idx_products_display_order ON products(display_order);
 CREATE INDEX IF NOT EXISTS idx_orders_customer ON orders(customer_id);
 CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status);
 CREATE INDEX IF NOT EXISTS idx_orders_payment_intent ON orders(payment_intent_id);
@@ -63,8 +67,8 @@ CREATE INDEX IF NOT EXISTS idx_customers_email ON customers(email);
 
 -- Insert initial Queen Bee Candles products
 -- Use INSERT without ON CONFLICT for simpler setup
-INSERT INTO products (title, description, price, image, category, stock_quantity, is_active) VALUES
-('Dragon', 'Majestic dragon-shaped beeswax candle, hand-crafted with intricate details', 1500, 'dragon.jpg', 'candles', 15, true),
-('Corn Cob', 'Rustic corn cob candle made from pure beeswax, perfect for country decor', 1600, 'corn-cob.jpg', 'candles', 12, true),
-('Bee and Flower', 'Delicate bee and flower design, symbolizing nature''s harmony', 850, 'bee-and-flower.jpg', 'candles', 18, true),
-('Rose', 'Elegant rose-shaped candle with natural beeswax fragrance', 800, 'rose.jpg', 'candles', 20, true);
+INSERT INTO products (title, description, price, image, category, stock_quantity, is_active, is_featured, display_order) VALUES
+('Dragon', 'Majestic dragon-shaped beeswax candle, hand-crafted with intricate details', 1500, 'dragon.jpg', 'candles', 15, true, true, 1),
+('Corn Cob', 'Rustic corn cob candle made from pure beeswax, perfect for country decor', 1600, 'corn-cob.jpg', 'candles', 12, true, true, 2),
+('Bee and Flower', 'Delicate bee and flower design, symbolizing nature''s harmony', 850, 'bee-and-flower.jpg', 'candles', 18, true, false, 3),
+('Rose', 'Elegant rose-shaped candle with natural beeswax fragrance', 800, 'rose.jpg', 'candles', 20, true, false, 4);
