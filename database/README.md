@@ -1,103 +1,250 @@
-# Database Setup
+# Queen Bee Candles - Database Migration Scripts
 
-This directory contains the database schema and migrations for the e-commerce platform.
+This directory contains all scripts and documentation needed to migrate from local PostgreSQL to Docker PostgreSQL.
 
-## Quick Start
+## 📁 Files Overview
 
-### Initial Setup
+### Migration Scripts
+- **`backup-local-db.sh`** - Backs up local PostgreSQL database
+- **`restore-to-docker.sh`** - Restores backup to Docker PostgreSQL
+- **`verify-migration.sh`** - Tests migration success
+
+### Documentation
+- **`QUICK_MIGRATION.md`** - Fast-track migration checklist (⏱️ 10 minutes)
+- **`MIGRATION_GUIDE.md`** - Comprehensive step-by-step guide
+- **`init.sql`** - Database schema and initial seed data
+
+### Generated Files
+- **`backups/`** - Database backup files (created automatically)
+  - `queen_bee_backup_YYYYMMDD_HHMMSS.sql` - Timestamped backups
+  - `queen_bee_latest.sql` - Most recent backup (for easy access)
+
+## 🚀 Quick Start
+
+If you're ready to migrate right now:
+
 ```bash
-# Create database and run initial schema
-psql -h localhost -U your_username -d your_database_name -f init.sql
+# 1. Navigate to project root
+cd /Users/bryanowens/Code/Websites/Candles/queen-bee
+
+# 2. Follow the quick guide
+cat database/QUICK_MIGRATION.md
+
+# 3. Run migration (takes ~10 minutes)
+./database/backup-local-db.sh
+docker-compose down -v
+docker-compose up -d postgres
+./database/restore-to-docker.sh
+./database/verify-migration.sh
 ```
 
-This creates:
-- Products table with sample products
-- Customers table
-- Orders and order_items tables
-- Necessary indexes
+## 📖 Detailed Guides
 
-### Run Migrations (In Order)
+### For First-Time Migration
+Read `QUICK_MIGRATION.md` first - it's a simple checklist format.
+
+### For Understanding the Process
+Read `MIGRATION_GUIDE.md` for comprehensive explanations.
+
+### For Troubleshooting
+Check the "Troubleshooting" section in `MIGRATION_GUIDE.md`.
+
+## 🎯 Migration Goals
+
+**Before Migration:**
+- Local Mac PostgreSQL at `localhost:5432`
+- Real order data and correct inventory
+- Node.js connects to local database
+
+**After Migration:**
+- Docker PostgreSQL at `localhost:5432` (exposed from container)
+- All data preserved and verified
+- Node.js connects to Docker database
+- Consistent, portable development environment
+
+## ⚙️ Current Configuration
+
+### Database Credentials (Both Local & Docker)
+- **Database:** `queen_bee_candles`
+- **User:** `queenbee`
+- **Password:** `development123`
+- **Port:** 5432
+
+### Docker Container
+- **Container Name:** `ecommerce-postgres`
+- **Image:** `postgres:15-alpine`
+- **Network:** `app-network`
+
+## 🔍 Pre-Migration Checklist
+
+- [ ] Docker Desktop installed and running
+- [ ] Local PostgreSQL has all your data
+- [ ] Node.js server can be stopped temporarily
+- [ ] You have ~10 minutes available
+- [ ] You've read `QUICK_MIGRATION.md`
+
+## ⚡ Common Commands
+
+### Backup Commands
 ```bash
-# Add dimension columns for shipping calculator
-psql -h localhost -U your_username -d your_database_name -f migrations/001_add_product_dimensions.sql
+# Create backup
+./database/backup-local-db.sh
 
-# Add dimensions to additional products
-psql -h localhost -U your_username -d your_database_name -f migrations/002_add_dimensions_to_new_products.sql
+# List backups
+ls -lh database/backups/
+
+# View backup size
+du -h database/backups/queen_bee_latest.sql
 ```
 
-## Database Configuration
-
-Configure your database connection in `server/.env`:
+### Docker Commands
 ```bash
-DATABASE_HOST=localhost
-DATABASE_PORT=5432
-DATABASE_NAME=your_database_name
-DATABASE_USER=your_username
-DATABASE_PASSWORD=your_secure_password
+# Start PostgreSQL
+docker-compose up -d postgres
+
+# Check status
+docker ps | grep ecommerce-postgres
+
+# View logs
+docker logs ecommerce-postgres
+
+# Connect to database
+docker exec -it ecommerce-postgres psql -U queenbee -d queen_bee_candles
 ```
 
-> **Security Note**: Never commit your actual `.env` file to version control. Use `.env.example` as a template.
-
-## Schema Overview
-
-### Products Table
-- Core product information (title, description, price, image)
-- Inventory management (stock_quantity, is_active)
-- Display controls (is_featured, display_order)
-- Shipping dimensions (weight_kg, length_mm, width_mm, height_mm)
-
-### Customers Table
-- Customer contact information
-- Email as unique identifier
-
-### Orders Table
-- Order tracking and status
-- Payment integration (Stripe payment_intent_id)
-- Customer relationship
-
-### Order Items Table
-- Individual line items per order
-- Product snapshot (title, price at time of order)
-- Quantity tracking
-
-## Migrations
-
-Migrations are numbered and should be run in order. Each migration is idempotent (safe to run multiple times).
-
-- `001_add_product_dimensions.sql` - Adds weight and dimension columns for shipping calculations
-- `002_add_dimensions_to_new_products.sql` - Populates dimensions for products (customize for your products)
-
-## Verification
-
-Check database structure:
+### Restore Commands
 ```bash
-psql -h localhost -U your_username -d your_database_name -c "\d products"
+# Restore to Docker
+./database/restore-to-docker.sh
+
+# Verify migration
+./database/verify-migration.sh
+
+# Manual verification
+docker exec -it ecommerce-postgres psql -U queenbee -d queen_bee_candles -c "SELECT * FROM products;"
 ```
 
-Verify products have dimensions:
+## 🛡️ Safety Features
+
+### Backup Strategy
+- Timestamped backups prevent overwriting
+- `queen_bee_latest.sql` always points to newest backup
+- Backups stored locally before any changes
+- Easy rollback to local PostgreSQL if needed
+
+### Zero Data Loss
+- Backup created before any Docker operations
+- Verification tests confirm data integrity
+- Original local database remains untouched
+- Multiple restore attempts possible
+
+## 🔄 Rollback Process
+
+If migration fails or you need to revert:
+
 ```bash
-psql -h localhost -U your_username -d your_database_name -c "
-SELECT title, weight_kg, length_mm, width_mm, height_mm 
-FROM products 
-LIMIT 5;"
+# 1. Stop Docker
+docker-compose down
+
+# 2. Restart local PostgreSQL
+brew services start postgresql@15
+
+# 3. Server auto-reconnects (DATABASE_HOST=localhost)
+cd server && npm start
+
+# Your data is safe!
 ```
 
-## Customization
+## 📊 What Gets Migrated
 
-This schema is designed to be generic and adaptable:
+✅ **Database Schema:**
+- `products` table
+- `customers` table
+- `orders` table
+- `order_items` table
+- All indexes
+- All foreign key constraints
 
-1. **Sample Products**: `init.sql` includes sample products - replace with your own
-2. **Migrations**: Adapt migration 002 with your actual product dimensions
-3. **Schema**: Extend tables as needed for your specific requirements
+✅ **Data:**
+- All product information and inventory
+- All customer records
+- All order history
+- All order items
 
-## Additional Documentation
+✅ **Preserved Values:**
+- Product IDs and SKUs
+- Stock quantities
+- Order totals and status
+- Timestamps and metadata
 
-For detailed guides and examples, see:
-- [`/docs/archive/database/`](../docs/archive/database/) - Migration guides, product management, and troubleshooting tools
+## 🧪 Testing After Migration
 
-## Notes
+The verification script tests:
+1. Docker container is running
+2. Database tables exist
+3. Product data is present
+4. Order data is preserved
+5. Specific inventory levels match (Product 5: 7, Product 6: 8)
+6. Server connectivity
+7. Database indexes
+8. Foreign key constraints
 
-- Product prices are stored in cents (e.g., 1500 = $15.00)
-- Shipping dimensions are for products only (packaging is calculated separately by the system)
-- All timestamps use UTC
-- Currency handling: Default is NZD but can be configured in the application
+Run it with:
+```bash
+./database/verify-migration.sh
+```
+
+## 📞 Getting Help
+
+### Check These First
+1. Read error messages carefully
+2. Check Docker is running: `docker ps`
+3. Verify backup exists: `ls database/backups/`
+4. Check server logs for connection errors
+
+### Troubleshooting Resources
+- `MIGRATION_GUIDE.md` - Has troubleshooting section
+- Docker logs: `docker logs ecommerce-postgres`
+- Server logs: Check terminal where server runs
+
+### Common Issues
+
+**"Connection refused"**
+- Ensure Docker container is running
+- Check port mapping: `docker port ecommerce-postgres`
+
+**"Database does not exist"**
+- Verify Docker .env has correct DATABASE_NAME
+- Restart container: `docker-compose up -d postgres`
+
+**"Empty database"**
+- Re-run restore: `./database/restore-to-docker.sh`
+- Check backup file size: `ls -lh database/backups/`
+
+## 🎓 Learning Resources
+
+- [Docker Compose Docs](https://docs.docker.com/compose/)
+- [PostgreSQL Backup/Restore](https://www.postgresql.org/docs/current/backup.html)
+- [Node.js pg Module](https://node-postgres.com/)
+
+## 📝 Notes
+
+- Migration typically takes 5-10 minutes
+- Zero downtime if you keep local PostgreSQL running during test
+- Can switch between Docker and local by changing `DATABASE_HOST`
+- Docker volumes persist data even when containers stop
+- Always test thoroughly before going to production
+
+## ✅ Post-Migration
+
+After successful migration:
+1. Test all application features
+2. Verify inventory updates work
+3. Process a test order
+4. Optionally stop local PostgreSQL
+5. Update your deployment documentation
+6. Consider setting up automated backups
+
+---
+
+**Ready to migrate?** Start with `QUICK_MIGRATION.md`! 🚀

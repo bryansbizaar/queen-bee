@@ -225,6 +225,10 @@ router.post(
         status: "paid", // Payment succeeded, so order is paid
       };
 
+      // DEBUG: Log order data being sent to OrderService
+      console.log('📦 Order data being sent to OrderService:', JSON.stringify(orderData, null, 2));
+      console.log('📦 Order items detail:', orderItems);
+
       // 6. Create the order
       const order = await OrderService.createOrder(orderData);
 

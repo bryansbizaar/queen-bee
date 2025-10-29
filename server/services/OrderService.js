@@ -71,6 +71,9 @@ class OrderService {
 
       // 3. Create order items and update inventory
       for (const item of items) {
+        // Log what we're about to do
+        console.log(`🔄 Processing item: Product ID ${item.productId}, Quantity: ${item.quantity}`);
+        
         // Add order item
         await client.query(
           `INSERT INTO order_items (order_id, product_id, product_title, quantity, unit_price, total_price)
@@ -84,7 +87,10 @@ class OrderService {
             item.price * item.quantity,
           ]
         );
+        console.log(`✅ Order item created for Product ID ${item.productId}`);
+        
         // Update product inventory (reduce stock)
+        console.log(`📉 Attempting to reduce stock for Product ID ${item.productId} by ${item.quantity}`);
         const updateResult = await client.query(
           `
           UPDATE products 
@@ -95,9 +101,13 @@ class OrderService {
           [item.quantity, item.productId]
         );
 
+        console.log(`📊 Update result:`, updateResult.rows);
+        
         if (updateResult.rows.length === 0) {
           throw new Error(`Insufficient stock for product ID ${item.productId}. Please check availability.`);
         }
+        
+        console.log(`✅ Stock updated! New stock for Product ID ${item.productId}: ${updateResult.rows[0].stock_quantity}`);
       }
 
       await client.query("COMMIT");

@@ -135,7 +135,7 @@ const StripeCheckout = ({
             JSON.stringify({
               orderId: orderData.orderId,
               paymentIntentId: paymentIntent.id,
-              amount: paymentIntent.amount / 100, // Convert back from cents
+              amount: paymentIntent.amount, // Keep in cents for formatAmount
               currency: paymentIntent.currency,
               customerEmail,
               customerName: addressData.fullName,
@@ -159,7 +159,7 @@ const StripeCheckout = ({
             JSON.stringify({
               orderId: orderId, // Use the original order ID
               paymentIntentId: paymentIntent.id,
-              amount: paymentIntent.amount / 100,
+              amount: paymentIntent.amount, // Keep in cents for formatAmount
               currency: paymentIntent.currency,
               customerEmail,
               customerName: addressData.fullName,

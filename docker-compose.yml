@@ -22,20 +22,19 @@ services:
       - app-network
 
   # pgAdmin (Optional - Web-based PostgreSQL management)
-  # Uncomment if you want a GUI for database management
-  # pgadmin:
-  #   image: dpage/pgadmin4:latest
-  #   container_name: app-pgadmin
-  #   restart: unless-stopped
-  #   environment:
-  #     PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@example.com}
-  #     PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
-  #   ports:
-  #     - "8081:80"
-  #   depends_on:
-  #     - postgres
-  #   networks:
-  #     - app-network
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: queen-bee-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@queenbeecandles.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin123}
+    ports:
+      - "8081:80"
+    depends_on:
+      - postgres
+    networks:
+      - app-network
 
 volumes:
   postgres_data:
