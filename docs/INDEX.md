@@ -32,6 +32,13 @@ Quick navigation to all project documentation.
 
 - **[CONTACT_FORM_SETUP.md](CONTACT_FORM_SETUP.md)** - Email service configuration
 
+## 🐛 Bug Fixes
+
+- **[BUG_FIX_SHIPPING_EMAIL.md](BUG_FIX_SHIPPING_EMAIL.md)** - Shipping cost double conversion fix (Oct 2025)
+
+### Historical Bug Fixes
+- **[archive/bug-fixes/](archive/bug-fixes/)** - Deprecated diagnoses and superseded fixes
+
 ## 🚢 Deployment
 
 - **[LOCAL-CI-SETUP.md](LOCAL-CI-SETUP.md)** - Local CI/CD setup
@@ -70,4 +77,4 @@ Historical documentation (scripts, troubleshooting, implementation details) is k
 
 ---
 
-**Last Updated:** October 28, 2025
+**Last Updated:** October 29, 2025

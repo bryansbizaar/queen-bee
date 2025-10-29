@@ -11,6 +11,7 @@ const StripeCheckout = ({
   customerEmail,
   amount,
   addressData,
+  selectedShipping,
 }) => {
   const stripe = useStripe();
   const elements = useElements();
@@ -234,6 +235,19 @@ const StripeCheckout = ({
             </span>
           </div>
         )}
+        
+        {/* Price breakdown */}
+        <div className="order-summary-row">
+          <span>Subtotal:</span>
+          <span>{formatAmount(amount - (selectedShipping?.cost * 100 || 0))}</span>
+        </div>
+        {addressData.shippingOption === "ship" && selectedShipping && (
+          <div className="order-summary-row">
+            <span>Shipping ({selectedShipping.description.replace(' (Estimated)', '')}):</span>
+            <span>{formatAmount(selectedShipping.cost * 100)}</span>
+          </div>
+        )}
+        
         <div className="order-summary-total">
           <span className="order-summary-bold">Total:</span>
           <span className="order-summary-bold">{formatAmount(amount)}</span>
@@ -282,6 +296,11 @@ StripeCheckout.propTypes = {
     postalCode: PropTypes.string,
     shippingOption: PropTypes.oneOf(["ship", "pickup"]).isRequired,
   }).isRequired,
+  selectedShipping: PropTypes.shape({
+    description: PropTypes.string.isRequired,
+    cost: PropTypes.number.isRequired,
+    estimatedDays: PropTypes.string,
+  }),
 };
 
 export default StripeCheckout;

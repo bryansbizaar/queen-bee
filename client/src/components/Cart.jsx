@@ -34,6 +34,7 @@ const Cart = () => {
   // Shipping calculator state
   const [selectedShipping, setSelectedShipping] = useState(null);
   const [shippingError, setShippingError] = useState(null);
+  const [totalWithShipping, setTotalWithShipping] = useState(0);
 
   const generateOrderId = () => {
     const timestamp = Date.now();
@@ -200,6 +201,7 @@ const Cart = () => {
         if (data.success && data.data && data.data.clientSecret) {
           setClientSecret(data.data.clientSecret); // ✅ Correct path
           setOrderId(newOrderId);
+          setTotalWithShipping(total); // Store the total with shipping
           setStep("payment");
         } else {
           throw new Error("Invalid response: missing client secret");
@@ -257,8 +259,9 @@ const Cart = () => {
             clientSecret={clientSecret}
             orderId={orderId}
             customerEmail={customerEmail}
-            amount={getCartTotal()}
+            amount={totalWithShipping}
             addressData={addressData}
+            selectedShipping={selectedShipping}
           />
         </Elements>
       </div>

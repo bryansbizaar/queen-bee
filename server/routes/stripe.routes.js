@@ -9,6 +9,7 @@ import {
   InternalServerError,
 } from "../middleware/errors/CustomErrors.js";
 import OrderService from "../services/OrderService.js";
+import EmailService from "../services/EmailService.js";
 
 dotenv.config();
 
@@ -101,8 +102,8 @@ router.post(
     try {
       const { amount, orderId, customerEmail, cartItems } = req.body;
 
-      // Convert amount to cents for Stripe (multiply by 100)
-      const amountInCents = Math.round(parseFloat(amount) * 100);
+      // Amount is already in cents from the frontend
+      const amountInCents = Math.round(parseFloat(amount));
 
       // Create payment intent with enhanced metadata
       const paymentIntent = await stripe.paymentIntents.create({
@@ -226,6 +227,34 @@ router.post(
 
       // 6. Create the order
       const order = await OrderService.createOrder(orderData);
+
+      // 7. Send order confirmation email (don't fail if email fails)
+      try {
+        // Map database item structure to email template structure
+        const emailItems = order.items.map(item => ({
+          title: item.product_title,
+          quantity: item.quantity,
+          price: item.unit_price
+        }));
+        
+        // Calculate shipping cost (total - sum of items)
+        const itemsTotal = order.items.reduce((sum, item) => sum + (item.unit_price * item.quantity), 0);
+        const shippingCost = order.total_amount - itemsTotal;
+        
+        await EmailService.sendOrderConfirmation({
+          customerEmail: order.customer_email,
+          customerName: customerName || 'Valued Customer',
+          orderId: order.order_id,
+          orderItems: emailItems,
+          totalAmount: order.total_amount,
+          shippingCost: shippingCost,
+          shippingOption: req.body.shippingOption || 'ship',
+          shippingAddress: shippingAddress
+        });
+      } catch (emailError) {
+        console.error('Failed to send order confirmation email:', emailError);
+        // Continue - don't fail the order if email fails
+      }
 
       res.json({
         success: true,
