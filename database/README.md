@@ -1,250 +1,255 @@
-# Queen Bee Candles - Database Migration Scripts
+# Queen Bee Candles - Database
 
-This directory contains all scripts and documentation needed to migrate from local PostgreSQL to Docker PostgreSQL.
+## 📁 Current Structure
 
-## 📁 Files Overview
-
-### Migration Scripts
-- **`backup-local-db.sh`** - Backs up local PostgreSQL database
-- **`restore-to-docker.sh`** - Restores backup to Docker PostgreSQL
-- **`verify-migration.sh`** - Tests migration success
-
-### Documentation
-- **`QUICK_MIGRATION.md`** - Fast-track migration checklist (⏱️ 10 minutes)
-- **`MIGRATION_GUIDE.md`** - Comprehensive step-by-step guide
-- **`init.sql`** - Database schema and initial seed data
-
-### Generated Files
-- **`backups/`** - Database backup files (created automatically)
-  - `queen_bee_backup_YYYYMMDD_HHMMSS.sql` - Timestamped backups
-  - `queen_bee_latest.sql` - Most recent backup (for easy access)
-
-## 🚀 Quick Start
-
-If you're ready to migrate right now:
-
-```bash
-# 1. Navigate to project root
-cd /Users/bryanowens/Code/Websites/Candles/queen-bee
-
-# 2. Follow the quick guide
-cat database/QUICK_MIGRATION.md
-
-# 3. Run migration (takes ~10 minutes)
-./database/backup-local-db.sh
-docker-compose down -v
-docker-compose up -d postgres
-./database/restore-to-docker.sh
-./database/verify-migration.sh
+```
+database/
+├── README.md                    # This file
+├── init.sql                     # Database schema (used by Docker)
+├── migrations/                  # Schema version control
+│   ├── 001_add_product_dimensions.sql
+│   └── 002_add_dimensions_to_new_products.sql
+├── backup-local-db.sh          # Create database backup
+├── migrate-to-docker.sh        # Full automated migration (archived use-case)
+├── restore-to-docker.sh        # Restore from backup
+└── verify-migration.sh         # Verify database integrity
 ```
 
-## 📖 Detailed Guides
+## 🗄️ Database Configuration
 
-### For First-Time Migration
-Read `QUICK_MIGRATION.md` first - it's a simple checklist format.
-
-### For Understanding the Process
-Read `MIGRATION_GUIDE.md` for comprehensive explanations.
-
-### For Troubleshooting
-Check the "Troubleshooting" section in `MIGRATION_GUIDE.md`.
-
-## 🎯 Migration Goals
-
-**Before Migration:**
-- Local Mac PostgreSQL at `localhost:5432`
-- Real order data and correct inventory
-- Node.js connects to local database
-
-**After Migration:**
-- Docker PostgreSQL at `localhost:5432` (exposed from container)
-- All data preserved and verified
-- Node.js connects to Docker database
-- Consistent, portable development environment
-
-## ⚙️ Current Configuration
-
-### Database Credentials (Both Local & Docker)
+**Current Setup:** Docker PostgreSQL
+- **Container:** `ecommerce-postgres`
 - **Database:** `queen_bee_candles`
 - **User:** `queenbee`
-- **Password:** `development123`
-- **Port:** 5432
-
-### Docker Container
-- **Container Name:** `ecommerce-postgres`
-- **Image:** `postgres:15-alpine`
+- **Port:** `5432` (exposed to localhost)
 - **Network:** `app-network`
 
-## 🔍 Pre-Migration Checklist
-
-- [ ] Docker Desktop installed and running
-- [ ] Local PostgreSQL has all your data
-- [ ] Node.js server can be stopped temporarily
-- [ ] You have ~10 minutes available
-- [ ] You've read `QUICK_MIGRATION.md`
-
-## ⚡ Common Commands
-
-### Backup Commands
-```bash
-# Create backup
-./database/backup-local-db.sh
-
-# List backups
-ls -lh database/backups/
-
-# View backup size
-du -h database/backups/queen_bee_latest.sql
+**Connection String:**
+```
+postgresql://queenbee:development123@localhost:5432/queen_bee_candles
 ```
 
-### Docker Commands
+## 🚀 Common Operations
+
+### Start Database
 ```bash
-# Start PostgreSQL
+# Start PostgreSQL container
 docker-compose up -d postgres
 
-# Check status
+# Verify it's running
 docker ps | grep ecommerce-postgres
+```
 
-# View logs
+### Stop Database
+```bash
+# Stop PostgreSQL container
+docker-compose stop postgres
+
+# Or stop all services
+docker-compose down
+```
+
+### View Logs
+```bash
+# View PostgreSQL logs
 docker logs ecommerce-postgres
 
-# Connect to database
+# Follow logs in real-time
+docker logs -f ecommerce-postgres
+```
+
+### Connect to Database
+```bash
+# Using psql from host
+psql -h localhost -p 5432 -U queenbee -d queen_bee_candles
+
+# Or connect from within container
 docker exec -it ecommerce-postgres psql -U queenbee -d queen_bee_candles
 ```
 
-### Restore Commands
+### Backup Database
 ```bash
-# Restore to Docker
+# Create timestamped backup
+./database/backup-local-db.sh
+
+# Backups saved to: database/backups/
+```
+
+### Restore Database
+```bash
+# Restore from latest backup
 ./database/restore-to-docker.sh
 
-# Verify migration
+# Or restore from specific backup
+docker exec -i ecommerce-postgres psql -U queenbee -d queen_bee_candles \
+  < database/backups/queen_bee_backup_YYYYMMDD_HHMMSS.sql
+```
+
+### Reset Database
+```bash
+# Complete reset (destroys all data)
+docker-compose down -v
+docker-compose up -d postgres
+
+# Database will reinitialize from init.sql
+```
+
+## 📊 Database Schema
+
+### Tables
+- **products** - Product catalog with inventory
+- **customers** - Customer records
+- **orders** - Order history
+- **order_items** - Order line items
+
+### Key Fields
+```sql
+-- Products
+id, title, description, price, image, category, stock_quantity, is_active
+
+-- Orders
+id, order_id, customer_email, status, total_amount, payment_intent_id
+
+-- Order Items
+id, order_id, product_id, quantity, unit_price, total_price
+```
+
+## 🔧 Schema Migrations
+
+### Apply Migration
+```bash
+# Create new migration file
+touch database/migrations/003_your_migration.sql
+
+# Apply migration
+docker exec -i ecommerce-postgres psql -U queenbee -d queen_bee_candles \
+  < database/migrations/003_your_migration.sql
+```
+
+### Migration Best Practices
+- Name files with incremental numbers: `001_`, `002_`, etc.
+- Include both UP and DOWN migrations
+- Test on backup before applying to production
+- Document what each migration does
+
+## 🛡️ Backup Strategy
+
+### Automatic Backups
+The `backup-local-db.sh` script creates:
+- Timestamped backup: `queen_bee_backup_YYYYMMDD_HHMMSS.sql`
+- Convenience link: `queen_bee_latest.sql`
+
+### Backup Schedule (Recommended)
+```bash
+# Add to crontab for daily backups at 2am
+0 2 * * * cd /path/to/queen-bee && ./database/backup-local-db.sh
+```
+
+### Backup Contents
+- Complete schema (tables, indexes, constraints)
+- All data (products, orders, customers)
+- Settings and sequences
+
+## 🧪 Testing
+
+### Verify Database Health
+```bash
+# Run verification script
 ./database/verify-migration.sh
 
-# Manual verification
-docker exec -it ecommerce-postgres psql -U queenbee -d queen_bee_candles -c "SELECT * FROM products;"
+# Manual verification queries
+docker exec ecommerce-postgres psql -U queenbee -d queen_bee_candles \
+  -c "SELECT COUNT(*) FROM products;"
+
+docker exec ecommerce-postgres psql -U queenbee -d queen_bee_candles \
+  -c "SELECT COUNT(*) FROM orders;"
 ```
 
-## 🛡️ Safety Features
+## 📞 Quick Troubleshooting
 
-### Backup Strategy
-- Timestamped backups prevent overwriting
-- `queen_bee_latest.sql` always points to newest backup
-- Backups stored locally before any changes
-- Easy rollback to local PostgreSQL if needed
+### Container Won't Start
+```bash
+# Check Docker is running
+docker ps
 
-### Zero Data Loss
-- Backup created before any Docker operations
-- Verification tests confirm data integrity
-- Original local database remains untouched
-- Multiple restore attempts possible
+# Check logs for errors
+docker logs ecommerce-postgres
 
-## 🔄 Rollback Process
+# Restart container
+docker-compose restart postgres
+```
 
-If migration fails or you need to revert:
+### Connection Refused
+```bash
+# Verify container is running
+docker ps | grep ecommerce-postgres
+
+# Check port mapping
+docker port ecommerce-postgres
+# Should show: 5432/tcp -> 0.0.0.0:5432
+
+# Verify server config
+cat server/.env | grep DATABASE_HOST
+# Should be: DATABASE_HOST=localhost
+```
+
+### Database Empty After Start
+```bash
+# Check if init.sql exists and has content
+cat database/init.sql
+
+# Restore from backup
+./database/restore-to-docker.sh
+```
+
+## 📚 Additional Documentation
+
+For historical context and migration details, see:
+- **Migration Documentation:** `docs/archive/database/`
+- **Product Management:** `docs/archive/database/PRODUCT_MANAGEMENT.md`
+
+## 🔑 Environment Variables
+
+**Docker Compose (.env in root):**
+```env
+DATABASE_NAME=queen_bee_candles
+DATABASE_USER=queenbee
+DATABASE_PASSWORD=development123
+```
+
+**Server (server/.env):**
+```env
+DATABASE_HOST=localhost
+DATABASE_PORT=5432
+DATABASE_NAME=queen_bee_candles
+DATABASE_USER=queenbee
+DATABASE_PASSWORD=development123
+```
+
+## ⚙️ Docker Volume
+
+Data is persisted in Docker volume: `queen-bee_postgres_data`
 
 ```bash
-# 1. Stop Docker
-docker-compose down
+# Inspect volume
+docker volume inspect queen-bee_postgres_data
 
-# 2. Restart local PostgreSQL
-brew services start postgresql@15
-
-# 3. Server auto-reconnects (DATABASE_HOST=localhost)
-cd server && npm start
-
-# Your data is safe!
+# Remove volume (destroys all data)
+docker volume rm queen-bee_postgres_data
 ```
 
-## 📊 What Gets Migrated
+## 🎯 Quick Reference
 
-✅ **Database Schema:**
-- `products` table
-- `customers` table
-- `orders` table
-- `order_items` table
-- All indexes
-- All foreign key constraints
-
-✅ **Data:**
-- All product information and inventory
-- All customer records
-- All order history
-- All order items
-
-✅ **Preserved Values:**
-- Product IDs and SKUs
-- Stock quantities
-- Order totals and status
-- Timestamps and metadata
-
-## 🧪 Testing After Migration
-
-The verification script tests:
-1. Docker container is running
-2. Database tables exist
-3. Product data is present
-4. Order data is preserved
-5. Specific inventory levels match (Product 5: 7, Product 6: 8)
-6. Server connectivity
-7. Database indexes
-8. Foreign key constraints
-
-Run it with:
-```bash
-./database/verify-migration.sh
-```
-
-## 📞 Getting Help
-
-### Check These First
-1. Read error messages carefully
-2. Check Docker is running: `docker ps`
-3. Verify backup exists: `ls database/backups/`
-4. Check server logs for connection errors
-
-### Troubleshooting Resources
-- `MIGRATION_GUIDE.md` - Has troubleshooting section
-- Docker logs: `docker logs ecommerce-postgres`
-- Server logs: Check terminal where server runs
-
-### Common Issues
-
-**"Connection refused"**
-- Ensure Docker container is running
-- Check port mapping: `docker port ecommerce-postgres`
-
-**"Database does not exist"**
-- Verify Docker .env has correct DATABASE_NAME
-- Restart container: `docker-compose up -d postgres`
-
-**"Empty database"**
-- Re-run restore: `./database/restore-to-docker.sh`
-- Check backup file size: `ls -lh database/backups/`
-
-## 🎓 Learning Resources
-
-- [Docker Compose Docs](https://docs.docker.com/compose/)
-- [PostgreSQL Backup/Restore](https://www.postgresql.org/docs/current/backup.html)
-- [Node.js pg Module](https://node-postgres.com/)
-
-## 📝 Notes
-
-- Migration typically takes 5-10 minutes
-- Zero downtime if you keep local PostgreSQL running during test
-- Can switch between Docker and local by changing `DATABASE_HOST`
-- Docker volumes persist data even when containers stop
-- Always test thoroughly before going to production
-
-## ✅ Post-Migration
-
-After successful migration:
-1. Test all application features
-2. Verify inventory updates work
-3. Process a test order
-4. Optionally stop local PostgreSQL
-5. Update your deployment documentation
-6. Consider setting up automated backups
+| Task | Command |
+|------|---------|
+| Start DB | `docker-compose up -d postgres` |
+| Stop DB | `docker-compose stop postgres` |
+| View logs | `docker logs ecommerce-postgres` |
+| Connect | `psql -h localhost -U queenbee -d queen_bee_candles` |
+| Backup | `./database/backup-local-db.sh` |
+| Restore | `./database/restore-to-docker.sh` |
+| Reset | `docker-compose down -v && docker-compose up -d postgres` |
 
 ---
 
-**Ready to migrate?** Start with `QUICK_MIGRATION.md`! 🚀
+**Need help?** Check the troubleshooting section above or review the archived migration docs in `docs/archive/database/`.

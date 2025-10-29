@@ -186,12 +186,50 @@ VITE_FEATURE_PRODUCT_REVIEWS=false
 
 ### Production Database Options
 
-**Recommended Providers**:
+**Development Setup**:
+- **Docker PostgreSQL** - Local development with docker-compose (see `/database/` directory for migration guides)
+- **pgAdmin** - Web-based PostgreSQL management at localhost:8081
+
+**Recommended Production Providers**:
 1. **AWS RDS** - Reliable, scalable, managed PostgreSQL
 2. **Digital Ocean Managed Databases** - Simple, cost-effective
 3. **Heroku Postgres** - Easy setup, good for small apps
 4. **Google Cloud SQL** - Integrated with GCP
 5. **Supabase** - PostgreSQL with additional features
+
+**Note**: For development, this project uses Docker PostgreSQL. See `/database/README.md` for local setup and migration guides.
+
+### Local Development Database (Docker)
+
+For local development, the project uses Docker Compose to run PostgreSQL:
+
+```bash
+# Start PostgreSQL and pgAdmin
+docker-compose up -d postgres pgadmin
+
+# Access pgAdmin at http://localhost:8081
+# Email: admin@queenbeecandles.com
+# Password: admin123
+
+# Connect to database:
+# Host: postgres (from within Docker) or localhost (from host machine)
+# Port: 5432
+# Database: queen_bee_candles
+# Username: queenbee
+# Password: development123
+```
+
+**Database Management**:
+- Initialize schema: `docker exec ecommerce-postgres psql -U queenbee -d queen_bee_candles < database/init.sql`
+- View data: `docker exec ecommerce-postgres psql -U queenbee -d queen_bee_candles -c "SELECT * FROM products;"`
+- Backup: `./database/backup-local-db.sh`
+- Restore: `./database/restore-to-docker.sh`
+
+**Migration from Local PostgreSQL**:
+If migrating from local PostgreSQL to Docker, see comprehensive guides in `/database/`:
+- `QUICK_MIGRATION.md` - 10-minute migration checklist
+- `MIGRATION_GUIDE.md` - Complete step-by-step guide
+- `TROUBLESHOOTING.md` - Common issues and solutions
 
 ### Database Configuration Steps
 

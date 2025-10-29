@@ -68,8 +68,8 @@ _Seamless experience across all devices_
 ## 🚀 Quick Start
 
 ```bash
-# Start PostgreSQL with Docker
-docker run --name postgres-db -e POSTGRES_PASSWORD=yourpassword -p 5432:5432 -d postgres
+# Start PostgreSQL and pgAdmin with Docker Compose
+docker-compose up -d postgres pgadmin
 
 # Server setup
 cd server && npm install && npm run dev
