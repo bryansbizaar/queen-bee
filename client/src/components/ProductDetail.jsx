@@ -19,7 +19,8 @@ const ProductDetail = ({ productId }) => {
     const fetchProduct = async () => {
       try {
         const data = await productAPI.getById(id);
-        setProduct(data.product);
+        // API returns { product: {...} } from getById
+        setProduct(data.product || data);
       } catch (err) {
         setError(err.message);
       } finally {
