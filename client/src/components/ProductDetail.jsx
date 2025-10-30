@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import useCart from "../context/useCart";
 import formatAmount from "../utils/formatAmount";
 import LoadingSpinner from "./LoadingSpinner";
+import { productAPI } from "../services/api";
 
 const ProductDetail = ({ productId }) => {
   const { id: paramId } = useParams();
@@ -17,21 +18,8 @@ const ProductDetail = ({ productId }) => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:8080/api/products/${id}`
-        );
-        if (!response.ok) {
-          throw new Error("Product not found");
-        }
-        const data = await response.json();
-
-        // Handle the new nested response structure
-        if (data.success && data.data && data.data.product) {
-          setProduct(data.data.product);
-        } else {
-          // Fallback for simple response structure
-          setProduct(data);
-        }
+        const data = await productAPI.getById(id);
+        setProduct(data.product);
       } catch (err) {
         setError(err.message);
       } finally {

@@ -16,7 +16,10 @@ cd client
 npm install
 
 echo "🏗️  Building client for production..."
-echo "Using API URL: $VITE_API_URL"
+echo "Environment variables:"
+echo "VITE_API_URL=$VITE_API_URL"
+echo "NODE_ENV=$NODE_ENV"
+echo "VITE_STRIPE_PUBLISHABLE_KEY=${VITE_STRIPE_PUBLISHABLE_KEY:0:20}..."
 npm run build
 cd ..
 
