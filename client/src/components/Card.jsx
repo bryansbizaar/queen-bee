@@ -3,8 +3,8 @@ import formatAmount from "../utils/formatAmount";
 
 const Card = ({ title, price, description, image }) => {
   // Handle both full URLs and image filenames
-  // Use environment variable for API URL, fallback to relative path in production
-  const apiUrl = import.meta.env.VITE_API_URL || '';
+  // Use environment variable for API URL, fallback to current origin in production
+  const apiUrl = import.meta.env.VITE_API_URL || (typeof window !== 'undefined' ? window.location.origin : '');
   const imageUrl = image?.includes("http")
     ? image
     : `${apiUrl}/images/${image}`;
