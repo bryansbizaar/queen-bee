@@ -4,8 +4,11 @@ import MockProductService from "./mockProductService.js";
 // Check if database is available
 let useMockData = false;
 try {
-  // This will be set to true if database connection fails
-  if (!process.env.DATABASE_HOST || !process.env.DATABASE_NAME) {
+  // Check for either DATABASE_URL (production) or individual variables (local)
+  const hasDbConfig = process.env.DATABASE_URL || 
+    (process.env.DATABASE_HOST && process.env.DATABASE_NAME);
+  
+  if (!hasDbConfig) {
     useMockData = true;
     console.log("⚠️  No database configuration found, using mock product data");
   }

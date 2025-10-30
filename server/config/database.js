@@ -5,18 +5,37 @@ dotenv.config();
 
 const { Pool } = pkg;
 
+// Create pool configuration
+// Support both DATABASE_URL (Render/production) and individual variables (local Docker)
+let poolConfig;
+
+if (process.env.DATABASE_URL) {
+  // Production: Use DATABASE_URL from Render
+  console.log("🔗 Using DATABASE_URL for connection");
+  poolConfig = {
+    connectionString: process.env.DATABASE_URL,
+    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+    max: 20,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 2000,
+  };
+} else {
+  // Local development: Use individual environment variables
+  console.log("🔗 Using individual DATABASE_* variables for connection");
+  poolConfig = {
+    host: process.env.DATABASE_HOST,
+    port: process.env.DATABASE_PORT,
+    database: process.env.DATABASE_NAME,
+    user: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PASSWORD,
+    max: 20,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 2000,
+  };
+}
+
 // Create a connection pool
-const pool = new Pool({
-  host: process.env.DATABASE_HOST,
-  port: process.env.DATABASE_PORT,
-  database: process.env.DATABASE_NAME,
-  user: process.env.DATABASE_USER,
-  password: process.env.DATABASE_PASSWORD,
-  // Connection pool settings
-  max: 20, // maximum number of clients in the pool
-  idleTimeoutMillis: 30000, // how long a client is allowed to remain idle
-  connectionTimeoutMillis: 2000, // how long to wait when connecting
-});
+const pool = new Pool(poolConfig);
 
 // Test the connection
 pool.on("connect", () => {

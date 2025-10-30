@@ -26,19 +26,14 @@ app.use(express.urlencoded({ extended: true }));
 // Serve static images from the public/images directory
 app.use("/images", express.static(path.join(__dirname, "public/images")));
 
-// Routes
+// API Routes
 app.use("/api/products", productsRouter);
 app.use("/api/stripe", stripeRouter);
 app.use("/api/orders", orderRouter);
 app.use("/api/shipping", shippingRouter);
 app.use("/api/contact", contactRouter);
 
-// Basic route for testing
-app.get("/", (req, res) => {
-  res.json({ message: "Welcome to Queen Bee Candles API" });
-});
-
-// Health check route for tests
+// Health check route
 app.get("/api/health", (req, res) => {
   res.json({ 
     status: "OK", 
@@ -55,8 +50,24 @@ app.get("/api/contact-test", (req, res) => {
   });
 });
 
-// 404 handler for undefined routes
-app.use(notFoundHandler);
+// Serve static files from React build (production only)
+if (process.env.NODE_ENV === "production") {
+  const clientBuildPath = path.join(__dirname, "../client/dist");
+  app.use(express.static(clientBuildPath));
+  
+  // Handle React routing - serve index.html for all non-API routes
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(clientBuildPath, "index.html"));
+  });
+} else {
+  // Development mode - just show API message
+  app.get("/", (req, res) => {
+    res.json({ message: "Welcome to Queen Bee Candles API - Development Mode" });
+  });
+}
+
+// 404 handler for undefined API routes
+app.use("/api/*", notFoundHandler);
 
 // Global error handling middleware
 app.use(globalErrorHandler);
