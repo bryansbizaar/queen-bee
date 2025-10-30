@@ -2,9 +2,10 @@ import PropTypes from "prop-types";
 import formatAmount from "../utils/formatAmount";
 
 const Card = ({ title, price, description, image }) => {
+  // Get API URL from environment variable (set during build)
+  const apiUrl = import.meta.env.VITE_API_URL;
+  
   // Handle both full URLs and image filenames
-  // Use environment variable for API URL, fallback to current origin in production
-  const apiUrl = import.meta.env.VITE_API_URL || (typeof window !== 'undefined' ? window.location.origin : '');
   const imageUrl = image?.includes("http")
     ? image
     : `${apiUrl}/images/${image}`;

@@ -15,7 +15,8 @@ echo "📦 Installing client dependencies..."
 cd client
 npm install
 
-echo "🏗️  Building client for production...
+echo "🏗️  Building client for production..."
+echo "Using API URL: $VITE_API_URL"
 npm run build
 cd ..
 
