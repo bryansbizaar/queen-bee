@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import useCart from "../context/useCart";
 import formatAmount from "../utils/formatAmount";
 import PropTypes from "prop-types";
+import { API_BASE_URL } from "../services/api";
 
 const StripeCheckout = ({
   clientSecret,
@@ -44,7 +45,7 @@ const StripeCheckout = ({
             };
 
       const response = await fetch(
-        "http://localhost:8080/api/stripe/create-order",
+        `${API_BASE_URL}/stripe/create-order`,
         {
           method: "POST",
           headers: {
