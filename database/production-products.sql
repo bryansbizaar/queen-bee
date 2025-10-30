@@ -20,10 +20,10 @@ INSERT INTO products (
 ) VALUES
 
 -- Featured Products (1-10)
-('Dragon', 'Majestic dragon-shaped beeswax candle, hand-crafted with intricate details', 1500, 'dragon.jpg', 'candles', 15, true, 1),
-('Corn Cob', 'Rustic corn cob candle made from pure beeswax, perfect for country decor', 1600, 'corn-cob.jpg', 'candles', 12, true, 2),
-('Bee and Flower', 'Delicate bee and flower design, symbolizing nature''s harmony', 850, 'bee-and-flower.jpg', 'candles', 18, true, 3),
-('Rose', 'Elegant rose-shaped candle with natural beeswax fragrance', 800, 'rose.jpg', 'candles', 20, true, 4),
+('Dragon', '150g 11.5H x 8W', 1500, 'dragon.jpg', 'candles', 5, true, 1),
+('Corn Cob', '160g 15.5H x 4.5W', 1600, 'corn-cob.jpg', 'candles', 12, true, 2),
+('Bee and Flower', '45g 3H X 6.5W', 850, 'bee-and-flower.jpg', 'candles', 18, true, 3),
+('Rose', '40g 3H X 6.5W', 800, 'rose.jpg', 'candles', 20, true, 4),
 ('Flower', '40g 3H x 6.5W', 800, 'flower.jpg', 'candles', 10, true, 5),
 ('Swirl', '160g 6.5H x 7.5W', 1500, 'swirl.jpg', 'candles', 10, true, 6),
 ('Fern Ball', '280g 8H x 9W', 2000, 'fern-ball.jpg', 'candles', 10, true, 7),
