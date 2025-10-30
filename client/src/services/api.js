@@ -140,24 +140,17 @@ class APIService {
 
     try {
       const response = await fetchWithRetry(url, options);
-
-      // Log successful requests in development
-      if (import.meta.env?.MODE === "development") {
-        console.log(
-          `✅ API Success: ${options.method || "GET"} ${endpoint}`,
-          response
-        );
-      }
-
       return response;
     } catch (error) {
-      // Log errors
-      console.error(`❌ API Error: ${options.method || "GET"} ${endpoint}`, {
-        error: error.message,
-        status: error.status,
-        code: error.code,
-        field: error.field,
-      });
+      // Log errors in development only
+      if (import.meta.env?.MODE === "development") {
+        console.error(`❌ API Error: ${options.method || "GET"} ${endpoint}`, {
+          error: error.message,
+          status: error.status,
+          code: error.code,
+          field: error.field,
+        });
+      }
 
       throw error;
     }
@@ -210,7 +203,6 @@ export const productAPI = {
   getAll: async (params = {}) => {
     try {
       const response = await apiService.get("/products", params);
-      console.log('productAPI.getAll - response:', response);
       // Response structure: { success: true, data: { products: [...] } }
       return response?.data || response;
     } catch (error) {
@@ -229,14 +221,11 @@ export const productAPI = {
 
     try {
       const response = await apiService.get(`/products/${id}`);
-      console.log('productAPI.getById - Full response:', response);
-      console.log('productAPI.getById - response.data:', response.data);
       
       // Response structure: { success: true, data: { product: {...}, relatedProducts: [...] } }
       // Return response.data if it exists, otherwise return response directly
       return response?.data || response;
     } catch (error) {
-      console.error('productAPI.getById - Error:', error);
       if (error.status === 404) {
         throw new APIError("Product not found", 404);
       }

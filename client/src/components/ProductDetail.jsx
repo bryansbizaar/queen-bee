@@ -19,20 +19,16 @@ const ProductDetail = ({ productId }) => {
     const fetchProduct = async () => {
       try {
         const data = await productAPI.getById(id);
-        console.log('ProductDetail - Received data:', data);
         
         // Handle different response structures
         if (data?.product) {
-          console.log('ProductDetail - Using data.product');
           setProduct(data.product);
         } else if (data) {
-          console.log('ProductDetail - Using data directly');
           setProduct(data);
         } else {
           throw new Error('No product data received');
         }
       } catch (err) {
-        console.error('ProductDetail - Error:', err);
         setError(err.message);
       } finally {
         setLoading(false);
