@@ -20,7 +20,7 @@
     "test:watch": "cd client && npm run test:watch",
     "test:ui": "cd client && npm run test:ui",
     "lint": "cd client && npm run lint",
-    "build": "npm run install:all && npm run client:build",
+    "build": "npm run client:build",
     "install:all": "npm install && cd client && npm install && cd ../server && npm install",
     "clean": "rm -rf node_modules client/node_modules server/node_modules client/dist",
     "validate": "node validate-setup.js",
