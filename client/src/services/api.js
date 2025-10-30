@@ -32,6 +32,9 @@ const API_CONFIG = {
   retryDelay: 1000, // 1 second
 };
 
+// Export base URL without /api suffix for image paths
+export const API_BASE_URL = import.meta.env?.VITE_API_URL || "http://localhost:8080";
+
 // Utility function to wait
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 

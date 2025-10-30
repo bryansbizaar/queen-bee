@@ -6,9 +6,6 @@ export default defineConfig(({ mode }) => {
     ? 'https://queen-bee-candles.onrender.com'
     : 'http://localhost:8080';
   
-  console.log(`🏗️  Vite building in ${mode} mode`);
-  console.log(`🔗 VITE_API_URL will be: ${apiUrl}`);
-  
   return {
     plugins: [react()],
     define: {
