@@ -205,7 +205,9 @@ export const productAPI = {
   getAll: async (params = {}) => {
     try {
       const response = await apiService.get("/products", params);
-      return response.data;
+      console.log('productAPI.getAll - response:', response);
+      // Response structure: { success: true, data: { products: [...] } }
+      return response?.data || response;
     } catch (error) {
       throw new APIError(
         `Failed to load products: ${error.message}`,
@@ -222,8 +224,14 @@ export const productAPI = {
 
     try {
       const response = await apiService.get(`/products/${id}`);
-      return response.data;
+      console.log('productAPI.getById - Full response:', response);
+      console.log('productAPI.getById - response.data:', response.data);
+      
+      // Response structure: { success: true, data: { product: {...}, relatedProducts: [...] } }
+      // Return response.data if it exists, otherwise return response directly
+      return response?.data || response;
     } catch (error) {
+      console.error('productAPI.getById - Error:', error);
       if (error.status === 404) {
         throw new APIError("Product not found", 404);
       }
