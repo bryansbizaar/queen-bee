@@ -1,29 +1,9 @@
 import { query } from "../config/database.js";
 import MockProductService from "./mockProductService.js";
 
-// Check if database is available
-let useMockData = false;
-try {
-  // Check for either DATABASE_URL (production) or individual variables (local)
-  const hasDbConfig = process.env.DATABASE_URL || 
-    (process.env.DATABASE_HOST && process.env.DATABASE_NAME);
-  
-  if (!hasDbConfig) {
-    useMockData = true;
-    console.log("⚠️  No database configuration found, using mock product data");
-  }
-} catch (error) {
-  useMockData = true;
-  console.log("⚠️  Database connection failed, using mock product data");
-}
-
 export class ProductService {
   // Get all active products
   static async getAllProducts() {
-    if (useMockData) {
-      return MockProductService.getAllProducts();
-    }
-
     try {
       const result = await query(
         "SELECT id, title, description, price, image, category, stock_quantity FROM products WHERE is_active = true ORDER BY display_order ASC, id ASC"
@@ -41,10 +21,6 @@ export class ProductService {
 
   // Get product by ID
   static async getProductById(id) {
-    if (useMockData) {
-      return MockProductService.getProductById(id);
-    }
-
     try {
       const result = await query(
         "SELECT id, title, description, price, image, category, stock_quantity, weight_kg, length_mm, width_mm, height_mm FROM products WHERE id = $1 AND is_active = true",
