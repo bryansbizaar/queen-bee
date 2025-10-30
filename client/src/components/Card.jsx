@@ -3,6 +3,7 @@ import formatAmount from "../utils/formatAmount";
 
 const Card = ({ title, price, description, image }) => {
   // Get API URL from environment variable (set during build)
+  // This URL is baked into the bundle at build time
   const apiUrl = import.meta.env.VITE_API_URL;
   
   // Handle both full URLs and image filenames
