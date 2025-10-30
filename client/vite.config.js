@@ -3,8 +3,8 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig(({ mode }) => {
   const apiUrl = mode === 'production' 
-    ? 'https://queen-bee-candles.onrender.com'
-    : 'http://localhost:8080';
+    ? 'https://queen-bee-candles.onrender.com/api'
+    : 'http://localhost:8080/api';
   
   return {
     plugins: [react()],
