@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import useCart from "../context/useCart";
 import formatAmount from "../utils/formatAmount";
 import LoadingSpinner from "./LoadingSpinner";
-import { productAPI } from "../services/api";
+import { productAPI, API_BASE_URL } from "../services/api";
 
 const ProductDetail = ({ productId }) => {
   const { id: paramId } = useParams();
@@ -50,7 +50,7 @@ const ProductDetail = ({ productId }) => {
     <div className="product-detail">
       <div className="product-image">
         <img
-          src={`http://localhost:8080/images/${product.image}`}
+          src={`${API_BASE_URL}/images/${product.image}`}
           alt={product.title}
           className="card-img"
         />
