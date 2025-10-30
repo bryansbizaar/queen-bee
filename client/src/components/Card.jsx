@@ -1,12 +1,12 @@
 import PropTypes from "prop-types";
 import formatAmount from "../utils/formatAmount";
-import { API_BASE_URL } from "../services/api";
+import { SERVER_BASE_URL } from "../services/api";
 
 const Card = ({ title, price, description, image }) => {
   // Handle both full URLs and image filenames
   const imageUrl = image?.includes("http")
     ? image
-    : `${API_BASE_URL}/images/${image}`;
+    : `${SERVER_BASE_URL}/images/${image}`;
 
   return (
     <article className="card">

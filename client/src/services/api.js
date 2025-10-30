@@ -32,8 +32,11 @@ const API_CONFIG = {
   retryDelay: 1000, // 1 second
 };
 
-// Export base URL without /api suffix for image paths
-export const API_BASE_URL = import.meta.env?.VITE_API_URL || "http://localhost:8080";
+// Export base URL for API calls (includes /api)
+export const API_BASE_URL = API_CONFIG.baseURL;
+
+// Export server base URL for static assets like images (without /api)
+export const SERVER_BASE_URL = import.meta.env?.VITE_API_URL?.replace('/api', '') || "http://localhost:8080";
 
 // Utility function to wait
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -77,9 +80,11 @@ const fetchWithRetry = async (url, options = {}, attempt = 1) => {
     // Parse JSON response
     const contentType = response.headers.get("content-type");
     if (contentType && contentType.includes("application/json")) {
-      return await response.json();
+      const jsonData = await response.json();
+      return jsonData;
     }
 
+    // If not JSON, return the response object
     return response;
   } catch (error) {
     clearTimeout(timeoutId);
