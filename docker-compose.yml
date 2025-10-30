@@ -7,9 +7,9 @@ services:
     container_name: ecommerce-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_DB: ${DATABASE_NAME:-ecommerce_db}
-      POSTGRES_USER: ${DATABASE_USER:-dbuser}
-      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-changeme}
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
       POSTGRES_HOST_AUTH_METHOD: trust
     ports:
       - "${DATABASE_PORT:-5432}:5432"
@@ -24,11 +24,11 @@ services:
   # pgAdmin (Optional - Web-based PostgreSQL management)
   pgadmin:
     image: dpage/pgadmin4:latest
-    container_name: queen-bee-pgadmin
+    container_name: ecommerce-pgadmin
     restart: unless-stopped
     environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@queenbeecandles.com}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin123}
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
     ports:
       - "8081:80"
     depends_on:

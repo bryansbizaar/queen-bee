@@ -1,10 +1,12 @@
-# Queen Bee Candles 🐝
+# E-Commerce Platform 🛍️
 
-A professional e-commerce platform for handcrafted beeswax candles, showcasing modern web development practices and enterprise-grade architecture.
+A professional full-stack e-commerce application showcasing modern web development practices and enterprise-grade architecture. This template demonstrates complete product lifecycle management - from browsing products to secure payment processing.
+
+**Note**: This is a working e-commerce template that can be customized for any online retail business. All branding and product-specific references can be easily adapted to your needs.
 
 ## 🎯 Overview
 
-This full-stack e-commerce application demonstrates complete product lifecycle management - from browsing beautiful handcrafted candles to secure payment processing. Built with React, Node.js, PostgreSQL, and Stripe integration.
+This full-stack application demonstrates complete e-commerce functionality with React, Node.js, PostgreSQL, and Stripe integration.
 
 **Live Features**: Product catalog, shopping cart, secure checkout, order management, inventory tracking, and customer contact form with email notifications.
 
@@ -14,9 +16,9 @@ This full-stack e-commerce application demonstrates complete product lifecycle m
 
 ### Homepage & Product Gallery
 
-<img src="screenshots/homepage.png" width="80%" alt="Queen Bee Candles Homepage">
+<img src="screenshots/homepage.png" width="80%" alt="Homepage">
 
-_Professional products with responsive grid layout_
+_Professional product display with responsive grid layout_
 
 ### Product Detail & Shopping Cart
 
@@ -32,7 +34,7 @@ _Professional payment processing with Stripe integration_
 
 ### Mobile Responsive Design
 
-<img src="screenshots/mobile.png" width="40%" alt="Mobile Homepage">
+<img src="screenshots/mobile.png" width="40%" alt="Mobile View">
 
 _Seamless experience across all devices_
 
@@ -74,13 +76,16 @@ docker-compose up -d postgres pgadmin
 # Server setup
 cd server && npm install && npm run dev
 
-# Client setup
+# Client setup (in new terminal)
 cd client && npm install && npm run dev
 ```
 
 **Prerequisites**: Node.js 18+, Docker, Stripe account
 
-**Features**: Product catalog, shopping cart, secure checkout with Stripe, shipping calculator with NZ Post integration, contact form with email notifications.
+**Access**: 
+- Frontend: http://localhost:3000
+- Backend API: http://localhost:8080
+- pgAdmin: http://localhost:8081
 
 ---
 

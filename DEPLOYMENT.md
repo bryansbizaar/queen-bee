@@ -1,7 +1,7 @@
-# Deployment Guide - Queen Bee Candles
+# Deployment Guide
 
 **Version**: 1.0  
-**Last Updated**: October 22, 2025  
+**Last Updated**: October 2025  
 **Status**: Production Ready
 
 ---
@@ -23,7 +23,7 @@
 
 ## Overview
 
-This guide covers deploying Queen Bee Candles to a production environment. The application consists of three main components:
+This guide covers deploying your e-commerce application to a production environment. The application consists of three main components:
 
 1. **React Frontend** (Static files served by CDN or web server)
 2. **Express Backend** (Node.js API server)
@@ -79,7 +79,7 @@ Internet
 - [ ] Database indexes created
 - [ ] Test data removed from production database
 
-### Stripe Configuration
+### Payment Configuration
 
 - [ ] Stripe account verified
 - [ ] Live API keys obtained
@@ -110,12 +110,12 @@ Internet
 # =============================================================================
 
 # Database Configuration
-DATABASE_URL=postgresql://username:password@your-db-host:5432/queenbee_prod
-PGUSER=your_production_username
-PGPASSWORD=your_secure_production_password
-PGDATABASE=queenbee_prod
-PGHOST=your-db-host.region.provider.com
-PGPORT=5432
+DATABASE_URL=postgresql://username:password@your-db-host:5432/your_database_prod
+DATABASE_HOST=your-db-host.region.provider.com
+DATABASE_PORT=5432
+DATABASE_NAME=your_database_prod
+DATABASE_USER=your_production_username
+DATABASE_PASSWORD=your_secure_production_password
 
 # Stripe Configuration (LIVE KEYS)
 STRIPE_SECRET_KEY=sk_live_YOUR_LIVE_SECRET_KEY
@@ -126,7 +126,7 @@ PORT=8080
 NODE_ENV=production
 
 # CORS Configuration
-CORS_ORIGIN=https://queenbeecandles.com,https://www.queenbeecandles.com
+CORS_ORIGIN=https://yourdomain.com,https://www.yourdomain.com
 
 # Rate Limiting
 RATE_LIMIT_WINDOW_MS=900000  # 15 minutes
@@ -150,7 +150,7 @@ LOG_LEVEL=info
 VITE_STRIPE_PUBLISHABLE_KEY=pk_live_YOUR_LIVE_PUBLISHABLE_KEY
 
 # API Configuration
-VITE_API_URL=https://api.queenbeecandles.com
+VITE_API_URL=https://api.yourdomain.com
 
 # Analytics (Optional)
 VITE_GA_TRACKING_ID=G-XXXXXXXXXX
@@ -187,7 +187,7 @@ VITE_FEATURE_PRODUCT_REVIEWS=false
 ### Production Database Options
 
 **Development Setup**:
-- **Docker PostgreSQL** - Local development with docker-compose (see `/database/` directory for migration guides)
+- **Docker PostgreSQL** - Local development with docker-compose
 - **pgAdmin** - Web-based PostgreSQL management at localhost:8081
 
 **Recommended Production Providers**:
@@ -196,8 +196,6 @@ VITE_FEATURE_PRODUCT_REVIEWS=false
 3. **Heroku Postgres** - Easy setup, good for small apps
 4. **Google Cloud SQL** - Integrated with GCP
 5. **Supabase** - PostgreSQL with additional features
-
-**Note**: For development, this project uses Docker PostgreSQL. See `/database/README.md` for local setup and migration guides.
 
 ### Local Development Database (Docker)
 
@@ -208,28 +206,18 @@ For local development, the project uses Docker Compose to run PostgreSQL:
 docker-compose up -d postgres pgadmin
 
 # Access pgAdmin at http://localhost:8081
-# Email: admin@queenbeecandles.com
-# Password: admin123
+# Default credentials are in docker-compose.yml
 
 # Connect to database:
 # Host: postgres (from within Docker) or localhost (from host machine)
 # Port: 5432
-# Database: queen_bee_candles
-# Username: queenbee
-# Password: development123
 ```
 
 **Database Management**:
-- Initialize schema: `docker exec ecommerce-postgres psql -U queenbee -d queen_bee_candles < database/init.sql`
-- View data: `docker exec ecommerce-postgres psql -U queenbee -d queen_bee_candles -c "SELECT * FROM products;"`
+- Initialize schema: `docker exec container-name psql -U username -d database < database/init.sql`
+- View data: `docker exec container-name psql -U username -d database -c "SELECT * FROM products;"`
 - Backup: `./database/backup-local-db.sh`
 - Restore: `./database/restore-to-docker.sh`
-
-**Migration from Local PostgreSQL**:
-If migrating from local PostgreSQL to Docker, see comprehensive guides in `/database/`:
-- `QUICK_MIGRATION.md` - 10-minute migration checklist
-- `MIGRATION_GUIDE.md` - Complete step-by-step guide
-- `TROUBLESHOOTING.md` - Common issues and solutions
 
 ### Database Configuration Steps
 
@@ -238,7 +226,7 @@ If migrating from local PostgreSQL to Docker, see comprehensive guides in `/data
 **Example: Digital Ocean**
 ```bash
 # Via Digital Ocean CLI
-doctl databases create queenbee-prod \
+doctl databases create your-app-prod \
   --engine postgres \
   --region nyc3 \
   --size db-s-1vcpu-1gb \
@@ -249,7 +237,7 @@ doctl databases create queenbee-prod \
 ```bash
 # Via AWS CLI
 aws rds create-db-instance \
-  --db-instance-identifier queenbee-prod \
+  --db-instance-identifier your-app-prod \
   --db-instance-class db.t3.micro \
   --engine postgres \
   --engine-version 15.3 \
@@ -273,7 +261,7 @@ aws rds create-db-instance \
 
 ```bash
 # Connect to production database
-psql "postgresql://username:password@host:5432/queenbee_prod?sslmode=require"
+psql "postgresql://username:password@host:5432/database?sslmode=require"
 
 # Run schema initialization
 \i database/init.sql
@@ -299,10 +287,10 @@ SELECT * FROM products;
 **Manual Backup**:
 ```bash
 # Create backup
-pg_dump -h your-db-host.com -U username -d queenbee_prod > backup_$(date +%Y%m%d).sql
+pg_dump -h your-db-host.com -U username -d database > backup_$(date +%Y%m%d).sql
 
 # Restore from backup
-psql -h your-db-host.com -U username -d queenbee_prod < backup_20251022.sql
+psql -h your-db-host.com -U username -d database < backup_20251022.sql
 ```
 
 ---
@@ -390,7 +378,7 @@ psql -h your-db-host.com -U username -d queenbee_prod < backup_20251022.sql
 
 ## Production Deployment
 
-### Deployment: DigitalOcean (Recommended)
+### Deployment: DigitalOcean (Example)
 
 This guide uses DigitalOcean as an example, but principles apply to other providers.
 
@@ -398,7 +386,7 @@ This guide uses DigitalOcean as an example, but principles apply to other provid
 
 ```bash
 # Via DigitalOcean CLI
-doctl compute droplet create queenbee-app \
+doctl compute droplet create your-app \
   --image ubuntu-22-04-x64 \
   --size s-1vcpu-1gb \
   --region nyc3 \
@@ -430,19 +418,19 @@ npm install -g pm2
 apt install -y git
 
 # Create application user
-adduser --disabled-password --gecos "" queenbee
-usermod -aG sudo queenbee
+adduser --disabled-password --gecos "" appuser
+usermod -aG sudo appuser
 ```
 
 #### Step 3: Clone and Setup Application
 
 ```bash
 # Switch to application user
-su - queenbee
+su - appuser
 
 # Clone repository
-git clone https://github.com/yourusername/queen-bee.git
-cd queen-bee
+git clone https://github.com/yourusername/your-app.git
+cd your-app
 
 # Install dependencies
 npm run install:all
@@ -474,7 +462,7 @@ npm start  # Should start without errors
 
 ```bash
 # Create Nginx configuration
-sudo nano /etc/nginx/sites-available/queenbee
+sudo nano /etc/nginx/sites-available/your-app
 
 # Add this configuration:
 ```
@@ -483,9 +471,9 @@ sudo nano /etc/nginx/sites-available/queenbee
 # Frontend (React app)
 server {
     listen 80;
-    server_name queenbeecandles.com www.queenbeecandles.com;
+    server_name yourdomain.com www.yourdomain.com;
     
-    root /home/queenbee/queen-bee/client/dist;
+    root /home/appuser/your-app/client/dist;
     index index.html;
     
     # Serve React app
@@ -516,7 +504,7 @@ server {
 # API server (Express)
 server {
     listen 80;
-    server_name api.queenbeecandles.com;
+    server_name api.yourdomain.com;
     
     location / {
         proxy_pass http://localhost:8080;
@@ -534,7 +522,7 @@ server {
 
 ```bash
 # Enable site
-sudo ln -s /etc/nginx/sites-available/queenbee /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/your-app /etc/nginx/sites-enabled/
 
 # Test configuration
 sudo nginx -t
@@ -550,7 +538,7 @@ sudo systemctl restart nginx
 sudo apt install -y certbot python3-certbot-nginx
 
 # Obtain SSL certificates
-sudo certbot --nginx -d queenbeecandles.com -d www.queenbeecandles.com -d api.queenbeecandles.com
+sudo certbot --nginx -d yourdomain.com -d www.yourdomain.com -d api.yourdomain.com
 
 # Follow prompts to complete setup
 # Certbot will automatically configure Nginx for HTTPS
@@ -563,10 +551,10 @@ sudo certbot renew --dry-run
 
 ```bash
 # Navigate to server directory
-cd /home/queenbee/queen-bee/server
+cd /home/appuser/your-app/server
 
 # Start with PM2
-pm2 start server.js --name queenbee-api
+pm2 start server.js --name your-app-api
 
 # Configure PM2 to start on boot
 pm2 startup
@@ -576,7 +564,7 @@ pm2 save
 pm2 status
 
 # View logs
-pm2 logs queenbee-api
+pm2 logs your-app-api
 ```
 
 #### Step 8: Configure Firewall
@@ -597,98 +585,6 @@ sudo ufw status
 
 ---
 
-### Alternative: Deploy to Heroku
-
-Quick deployment for testing or small-scale production.
-
-#### Step 1: Prepare Application
-
-```bash
-# Create Procfile in root directory
-echo "web: cd server && npm start" > Procfile
-
-# Ensure package.json has engines
-{
-  "engines": {
-    "node": "18.x",
-    "npm": "9.x"
-  }
-}
-```
-
-#### Step 2: Deploy to Heroku
-
-```bash
-# Install Heroku CLI
-# https://devcenter.heroku.com/articles/heroku-cli
-
-# Login
-heroku login
-
-# Create app
-heroku create queenbee-candles
-
-# Add PostgreSQL
-heroku addons:create heroku-postgresql:mini
-
-# Set environment variables
-heroku config:set NODE_ENV=production
-heroku config:set STRIPE_SECRET_KEY=sk_live_...
-heroku config:set STRIPE_WEBHOOK_SECRET=whsec_...
-
-# Deploy
-git push heroku main
-
-# Run database migrations
-heroku run psql $DATABASE_URL < database/init.sql
-
-# Open app
-heroku open
-```
-
----
-
-### Alternative: Deploy to Vercel (Frontend) + Railway (Backend)
-
-Modern, developer-friendly deployment.
-
-#### Frontend on Vercel
-
-```bash
-# Install Vercel CLI
-npm i -g vercel
-
-# Navigate to client directory
-cd client
-
-# Deploy
-vercel
-
-# Follow prompts to:
-# - Link to project
-# - Configure build settings
-# - Set environment variables
-
-# Production deployment
-vercel --prod
-```
-
-#### Backend on Railway
-
-```bash
-# Go to railway.app
-# Connect GitHub repository
-# Select queen-bee repository
-# Configure:
-#   - Root directory: server
-#   - Start command: npm start
-# Add PostgreSQL database
-# Set environment variables
-# Deploy
-```
-
----
-
 ## Post-Deployment Tasks
 
 ### 1. Register Stripe Webhook
@@ -699,10 +595,10 @@ vercel --prod
 # Click "Add endpoint"
 
 # Endpoint URL:
-https://api.queenbeecandles.com/api/webhook
+https://api.yourdomain.com/api/webhook
 
 # OR (if single domain):
-https://queenbeecandles.com/api/webhook
+https://yourdomain.com/api/webhook
 
 # Select events:
 - payment_intent.succeeded
@@ -723,7 +619,7 @@ STRIPE_WEBHOOK_SECRET=whsec_...
 # 4. Order created in database
 
 # Monitor:
-pm2 logs queenbee-api  # Check for errors
+pm2 logs your-app-api  # Check for errors
 ```
 
 ### 3. Configure DNS
@@ -732,12 +628,12 @@ pm2 logs queenbee-api  # Check for errors
 # At your domain registrar (Namecheap, GoDaddy, etc.):
 
 # A Records:
-queenbeecandles.com      → your-server-ip
-www.queenbeecandles.com  → your-server-ip
-api.queenbeecandles.com  → your-server-ip
+yourdomain.com      → your-server-ip
+www.yourdomain.com  → your-server-ip
+api.yourdomain.com  → your-server-ip
 
 # Wait for DNS propagation (up to 48 hours)
-# Test: dig queenbeecandles.com
+# Test: dig yourdomain.com
 ```
 
 ### 4. Setup Monitoring
@@ -769,8 +665,8 @@ nano ~/backup-db.sh
 ```bash
 #!/bin/bash
 DATE=$(date +%Y%m%d_%H%M%S)
-BACKUP_DIR="/home/queenbee/backups"
-DB_NAME="queenbee_prod"
+BACKUP_DIR="/home/appuser/backups"
+DB_NAME="your_database_prod"
 
 mkdir -p $BACKUP_DIR
 
@@ -788,13 +684,13 @@ chmod +x ~/backup-db.sh
 
 # Add to crontab (daily at 2 AM)
 crontab -e
-0 2 * * * /home/queenbee/backup-db.sh
+0 2 * * * /home/appuser/backup-db.sh
 ```
 
 **Application Backups**:
 ```bash
 # Images and uploads
-rsync -avz /home/queenbee/queen-bee/server/public/images/ backup-server:/backups/images/
+rsync -avz /home/appuser/your-app/server/public/images/ backup-server:/backups/images/
 ```
 
 ---
@@ -809,7 +705,7 @@ rsync -avz /home/queenbee/queen-bee/server/public/images/ backup-server:/backups
 pm2 status
 
 # View logs
-pm2 logs queenbee-api
+pm2 logs your-app-api
 
 # Check resource usage
 htop
@@ -824,25 +720,25 @@ free -m
 **Application Health**:
 ```bash
 # Test API endpoint
-curl https://api.queenbeecandles.com/api/products
+curl https://api.yourdomain.com/api/products
 
 # Test frontend
-curl -I https://queenbeecandles.com
+curl -I https://yourdomain.com
 
 # Check SSL certificate
-curl -vI https://queenbeecandles.com 2>&1 | grep 'expire date'
+curl -vI https://yourdomain.com 2>&1 | grep 'expire date'
 ```
 
 **Database Health**:
 ```bash
 # Connect to database
-psql "postgresql://user:pass@host:5432/queenbee_prod"
+psql "postgresql://user:pass@host:5432/database"
 
 # Check connections
 SELECT count(*) FROM pg_stat_activity;
 
 # Check database size
-SELECT pg_size_pretty(pg_database_size('queenbee_prod'));
+SELECT pg_size_pretty(pg_database_size('database'));
 
 # Check table sizes
 SELECT schemaname, tablename, pg_size_pretty(pg_total_relation_size(schemaname||'.'||tablename))
@@ -874,10 +770,10 @@ FROM pg_tables WHERE schemaname = 'public' ORDER BY pg_total_relation_size(schem
 
 ```bash
 # SSH into server
-ssh queenbee@your-server-ip
+ssh appuser@your-server-ip
 
 # Navigate to application
-cd /home/queenbee/queen-bee
+cd /home/appuser/your-app
 
 # Pull latest changes
 git pull origin main
@@ -890,11 +786,11 @@ cd client
 npm run build
 
 # Restart backend
-pm2 restart queenbee-api
+pm2 restart your-app-api
 
 # Check status
 pm2 status
-pm2 logs queenbee-api --lines 50
+pm2 logs your-app-api --lines 50
 ```
 
 ---
@@ -905,8 +801,8 @@ pm2 logs queenbee-api --lines 50
 
 ```bash
 # SSH into server
-ssh queenbee@your-server-ip
-cd /home/queenbee/queen-bee
+ssh appuser@your-server-ip
+cd /home/appuser/your-app
 
 # View recent commits
 git log --oneline -10
@@ -923,10 +819,10 @@ npm run build
 
 # Restart backend
 cd ../server
-pm2 restart queenbee-api
+pm2 restart your-app-api
 
 # Verify
-curl https://api.queenbeecandles.com/api/products
+curl https://api.yourdomain.com/api/products
 ```
 
 ### Database Rollback
@@ -935,13 +831,13 @@ curl https://api.queenbeecandles.com/api/products
 # If database changes were made:
 
 # 1. Stop application
-pm2 stop queenbee-api
+pm2 stop your-app-api
 
 # 2. Restore from backup
-psql "postgresql://user:pass@host:5432/queenbee_prod" < backup_YYYYMMDD.sql
+psql "postgresql://user:pass@host:5432/database" < backup_YYYYMMDD.sql
 
 # 3. Restart application
-pm2 restart queenbee-api
+pm2 restart your-app-api
 ```
 
 ### Rollback Checklist
@@ -969,7 +865,7 @@ pm2 restart queenbee-api
 **Solutions**:
 ```bash
 # Check logs
-pm2 logs queenbee-api
+pm2 logs your-app-api
 
 # Common causes:
 # 1. Port already in use
@@ -1020,13 +916,13 @@ DATABASE_URL="postgresql://user:pass@host:5432/db?sslmode=require"
 echo $STRIPE_WEBHOOK_SECRET
 
 # 3. Test webhook locally with Stripe CLI
-stripe listen --forward-to https://your-domain.com/api/webhook
+stripe listen --forward-to https://yourdomain.com/api/webhook
 
 # 4. Check logs for webhook errors
-pm2 logs queenbee-api | grep webhook
+pm2 logs your-app-api | grep webhook
 
 # 5. Verify endpoint is accessible
-curl -X POST https://your-domain.com/api/webhook
+curl -X POST https://yourdomain.com/api/webhook
 ```
 
 #### SSL Certificate Issues
@@ -1062,10 +958,10 @@ free -m
 pm2 monit
 
 # Check for memory leaks
-pm2 logs queenbee-api
+pm2 logs your-app-api
 
 # Restart application
-pm2 restart queenbee-api
+pm2 restart your-app-api
 
 # If persistent:
 # 1. Increase server RAM
@@ -1084,10 +980,10 @@ pm2 restart queenbee-api
 sudo tail -f /var/log/nginx/error.log
 
 # Verify build exists
-ls -la /home/queenbee/queen-bee/client/dist/
+ls -la /home/appuser/your-app/client/dist/
 
 # Rebuild frontend
-cd /home/queenbee/queen-bee/client
+cd /home/appuser/your-app/client
 npm run build
 
 # Check Nginx configuration
@@ -1099,21 +995,6 @@ sudo systemctl restart nginx
 # Check browser console for errors
 # Verify API_URL in client .env matches backend
 ```
-
----
-
-## Emergency Contacts
-
-**Critical Issues**:
-- Database Provider Support
-- Hosting Provider Support (DigitalOcean, Heroku, etc.)
-- Stripe Support (for payment issues)
-- Domain Registrar Support
-
-**Internal**:
-- Development Team Lead
-- System Administrator
-- On-Call Developer
 
 ---
 
@@ -1133,21 +1014,4 @@ sudo systemctl restart nginx
 
 ---
 
-## Changelog
-
-### Version 1.0 (October 2025)
-- Initial deployment guide
-- DigitalOcean deployment instructions
-- Heroku deployment alternative
-- SSL setup with Let's Encrypt
-- Monitoring and maintenance procedures
-- Troubleshooting guide
-
----
-
-**Questions or Issues?**  
-Open an issue on GitHub or contact the development team.
-
----
-
-*Last updated: October 22, 2025*
+_Last updated: October 2025_
