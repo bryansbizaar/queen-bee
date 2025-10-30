@@ -6,6 +6,7 @@ import useCart from "../context/useCart";
 import formatAmount from "../utils/formatAmount";
 import StripeCheckout from "./StripeCheckout";
 import ShippingCalculator from "./ShippingCalculator";
+import { paymentAPI, SERVER_BASE_URL } from "../services/api";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
@@ -170,36 +171,22 @@ const Cart = () => {
         const shippingCost = addressData.shippingOption === "ship" && selectedShipping ? selectedShipping.cost * 100 : 0; // Convert to cents
         const total = subtotal + shippingCost;
 
-        const response = await fetch(
-          "http://localhost:8080/api/stripe/create-payment-intent",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              amount: total,
-              orderId: newOrderId,
-              customerEmail: customerEmail,
-              cartItems: cartItems.map((item) => ({
-                id: item.id,
-                title: item.title,
-                price: item.price,
-                quantity: item.quantity,
-              })),
-            }),
-          }
-        );
+        // Use the centralized paymentAPI method
+        const data = await paymentAPI.createPaymentIntent({
+          amount: total,
+          orderId: newOrderId,
+          customerEmail: customerEmail,
+          cartItems: cartItems.map((item) => ({
+            id: item.id,
+            title: item.title,
+            price: item.price,
+            quantity: item.quantity,
+          })),
+        });
 
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.error || "Failed to create payment intent");
-        }
-
-        // Handle the wrapped response format from your current server
-        if (data.success && data.data && data.data.clientSecret) {
-          setClientSecret(data.data.clientSecret); // ✅ Correct path
+        // The paymentAPI returns response.data directly
+        if (data && data.clientSecret) {
+          setClientSecret(data.clientSecret);
           setOrderId(newOrderId);
           setTotalWithShipping(total); // Store the total with shipping
           setStep("payment");
@@ -511,7 +498,7 @@ const Cart = () => {
           <div key={item.id} className="cart-item">
             <div className="cart-item-image">
               <img
-                src={`http://localhost:8080/images/${item.image}`}
+                src={`${SERVER_BASE_URL}/images/${item.image}`}
                 alt={item.title}
                 className="cart-item-img"
               />
