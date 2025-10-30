@@ -330,6 +330,63 @@ export const paymentAPI = {
   },
 };
 
+// Shipping API methods
+export const shippingAPI = {
+  // Calculate shipping costs
+  calculate: async (shippingData) => {
+    // Validate required fields
+    if (!shippingData.items || !Array.isArray(shippingData.items)) {
+      throw new ValidationError("Items array is required", "items");
+    }
+
+    if (!shippingData.postcode) {
+      throw new ValidationError("Postcode is required", "postcode");
+    }
+
+    // Validate postcode format (4 digits for NZ)
+    if (!/^\d{4}$/.test(shippingData.postcode)) {
+      throw new ValidationError(
+        "Postcode must be 4 digits",
+        "postcode"
+      );
+    }
+
+    try {
+      const response = await apiService.post(
+        "/shipping/calculate",
+        shippingData
+      );
+      return response.data || response;
+    } catch (error) {
+      throw new APIError(
+        `Failed to calculate shipping: ${error.message}`,
+        error.status || 500,
+        error.code,
+        error.field
+      );
+    }
+  },
+
+  // Validate postcode
+  validatePostcode: async (postcode) => {
+    if (!postcode) {
+      throw new ValidationError("Postcode is required", "postcode");
+    }
+
+    try {
+      const response = await apiService.post("/shipping/validate-postcode", {
+        postcode,
+      });
+      return response.data || response;
+    } catch (error) {
+      throw new APIError(
+        `Failed to validate postcode: ${error.message}`,
+        error.status || 500
+      );
+    }
+  },
+};
+
 // Health check
 export const healthAPI = {
   check: async () => {

@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import PropTypes from "prop-types";
+import { shippingAPI } from "../services/api";
 
 export default function ShippingCalculator({
   cartItems,
@@ -20,30 +21,14 @@ export default function ShippingCalculator({
     setError("");
 
     try {
-      const response = await fetch(
-        "http://localhost:8080/api/shipping/calculate",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            items: cartItems.map((item) => ({
-              id: item.id,
-              quantity: item.quantity,
-            })),
-            postcode: postcode,
-          }),
-        }
-      );
+      const data = await shippingAPI.calculate({
+        items: cartItems.map((item) => ({
+          id: item.id,
+          quantity: item.quantity,
+        })),
+        postcode: postcode,
+      });
 
-      console.log('[ShippingCalculator] Response status:', response.status);
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('[ShippingCalculator] Error response:', errorData);
-        throw new Error(errorData.message || "Failed to calculate shipping");
-      }
-
-      const data = await response.json();
       console.log('[ShippingCalculator] Success data:', data);
       setOptions(data.options || []);
       setIsRural(data.isRural || false);
@@ -57,7 +42,7 @@ export default function ShippingCalculator({
       }
     } catch (err) {
       console.error('[ShippingCalculator] Calculation error:', err);
-      setError("Unable to calculate shipping. Please try again.");
+      setError(err.message || "Unable to calculate shipping. Please try again.");
       onError?.(err);
     } finally {
       setLoading(false);
