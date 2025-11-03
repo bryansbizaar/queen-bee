@@ -597,12 +597,17 @@ body {
 /* Cart Icon Enhancements */
 .cart-icon-wrapper {
   position: relative;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   color: var(--color-primary-medium);
   text-decoration: none;
   padding: var(--spacing-sm);
   border-radius: var(--radius-circle);
   transition: var(--transition-normal);
+  background: transparent;
+  border: none;
+  cursor: pointer;
 }
 
 .cart-icon-wrapper:hover {
@@ -1352,6 +1357,8 @@ body {
   font-weight: bold;
   color: #374151;
   font-size: 0.95rem;
+  margin-top: 1rem;
+  margin-bottom: 0.75rem;
 }
 
 .cart-email-input {

@@ -10,6 +10,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Cart Sidebar Feature**
+  - Slide-out cart sidebar accessible from header cart icon
+  - Quick cart editing without losing checkout progress
+  - Add/remove items and adjust quantities from any page
+  - "View Cart & Checkout" button for seamless checkout flow
+  - Smooth animations and responsive design
+  - Keyboard accessible (ESC to close) with screen reader support
+  - Preserves shipping details, email, and form data during cart edits
+  - Available throughout entire checkout process (home, cart, shipping, payment pages)
+  - Documentation in docs/archive/cart/
 - **Shipping Calculator Feature**
   - Real-time shipping cost calculation integrated into checkout flow
   - NZ Post API integration with fallback rates for development

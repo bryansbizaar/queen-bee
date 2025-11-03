@@ -2,9 +2,11 @@ import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import logo from "../assets/logo.png";
 import CartIcon from "./CartIcon";
+import CartSidebar from "./cart/CartSidebar";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [cartSidebarOpen, setCartSidebarOpen] = useState(false);
   const navRef = useRef(null);
   const menuButtonRef = useRef(null);
 
@@ -14,6 +16,14 @@ const Header = () => {
 
   const closeMenu = () => {
     setMenuOpen(false);
+  };
+
+  const toggleCartSidebar = () => {
+    setCartSidebarOpen(!cartSidebarOpen);
+  };
+
+  const closeCartSidebar = () => {
+    setCartSidebarOpen(false);
   };
 
   // Close menu when clicking outside
@@ -60,7 +70,7 @@ const Header = () => {
 
           {/* Add the cart icon here for mobile view */}
           <div className="mobile-cart">
-            <CartIcon />
+            <CartIcon onClick={toggleCartSidebar} />
           </div>
 
           <button
@@ -100,12 +110,15 @@ const Header = () => {
                 </Link>
               </li>
               <li className="cart-nav-item">
-                <CartIcon />
+                <CartIcon onClick={toggleCartSidebar} />
               </li>
             </ul>
           </nav>
         </div>
       </div>
+
+      {/* Cart Sidebar */}
+      <CartSidebar isOpen={cartSidebarOpen} onClose={closeCartSidebar} />
     </header>
   );
 };
