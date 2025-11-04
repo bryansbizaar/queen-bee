@@ -1,241 +1,438 @@
-# Queen Bee Candles - Render Deployment Guide
+# Queen Bee Candles - Fly.io Deployment Guide
 
-## 📋 Pre-Deployment Checklist
-
-- [ ] Code committed to GitHub
-- [ ] Stripe TEST keys ready (pk_test_... and sk_test_...)
-- [ ] Render account created
-- [ ] Domain ready (queencandles.co.nz)
-
-## 🚀 Step-by-Step Deployment
-
-### Step 1: Push Code to GitHub
-
-```bash
-cd /Users/bryanowens/Code/Websites/Candles/queen-bee
-git add .
-git commit -m "Prepare for Render deployment"
-git push origin main
-```
-
-### Step 2: Create Render Services
-
-#### A. Create PostgreSQL Database
-
-1. Log into [Render Dashboard](https://dashboard.render.com)
-2. Click **"New +"** → **"PostgreSQL"**
-3. **Configuration:**
-   - Name: `queen-bee-db`
-   - Database: `queenbee`
-   - User: (auto-generated)
-   - Region: Choose closest to NZ (Singapore or Oregon)
-   - Plan: **Free**
-4. Click **"Create Database"**
-5. **Save these credentials:**
-   - Internal Database URL (starts with `postgresql://`)
-   - You'll need this for the web service
-
-#### B. Create Web Service
-
-1. Click **"New +"** → **"Web Service"**
-2. Connect your GitHub repository
-3. Select `queen-bee-candles` repo
-4. **Configuration:**
-
-```
-Name: queen-bee-candles
-Region: Same as database
-Branch: main
-Root Directory: (leave blank)
-Runtime: Node
-Build Command: npm run build
-Start Command: npm start
-Plan: Free (or Starter for custom domain)
-```
-
-### Step 3: Configure Environment Variables
-
-In your Render Web Service dashboard, go to **"Environment"** tab and add:
-
-#### Required Variables:
-
-```bash
-NODE_ENV=production
-PORT=10000
-
-# Database (automatically from linked database)
-DATABASE_URL=<Link to queen-bee-db>
-
-# Stripe TEST Keys (get from Stripe Dashboard)
-STRIPE_SECRET_KEY=sk_test_your_stripe_secret_key_here
-STRIPE_PUBLISHABLE_KEY=pk_test_your_stripe_publishable_key_here
-
-# Client-side Stripe key (for Vite build)
-VITE_STRIPE_PUBLISHABLE_KEY=pk_test_your_stripe_publishable_key_here
-
-# API URL (use your Render URL)
-VITE_API_URL=https://queen-bee-candles.onrender.com
-```
-
-### Step 4: Link Database to Web Service
-
-1. In Web Service dashboard, go to **"Environment"** tab
-2. Find **"DATABASE_URL"**
-3. Click **"Add from database"**
-4. Select `queen-bee-db`
-5. Choose "Internal Database URL"
-
-### Step 5: Deploy
-
-1. Click **"Manual Deploy"** → **"Deploy latest commit"**
-2. Watch the build logs
-3. Wait for deployment to complete (~5-10 minutes)
-
-### Step 6: Initialize Database
-
-After first deployment, you need to set up the database schema:
-
-1. Go to your PostgreSQL database in Render
-2. Click **"Connect"** → **"External Connection"**
-3. Use a PostgreSQL client or run SQL directly:
-
-```sql
--- Run your init.sql file here
--- Or connect via psql:
-psql -h <hostname> -U <user> -d queenbee < server/init.sql
-```
-
-### Step 7: Test Your Deployment
-
-Visit your Render URL: `https://queen-bee-candles.onrender.com`
-
-Test these endpoints:
-- `https://queen-bee-candles.onrender.com/` (React app)
-- `https://queen-bee-candles.onrender.com/api/health` (API health)
-- `https://queen-bee-candles.onrender.com/api/products` (Products API)
-
-### Step 8: Configure Custom Domain
-
-1. In Render dashboard, go to **"Settings"**
-2. Find **"Custom Domain"** section
-3. Click **"Add Custom Domain"**
-4. Enter: `queencandles.co.nz`
-5. Render will provide DNS records
-
-#### Update Your Domain DNS:
-
-Add these records to your domain registrar:
-
-```
-Type: CNAME
-Name: www
-Value: queen-bee-candles.onrender.com
-
-Type: A
-Name: @
-Value: <Render provides this IP>
-```
-
-### Step 9: Enable HTTPS
-
-Render automatically provides free SSL certificates. Just wait a few minutes after DNS propagation.
-
-## 🔧 Post-Deployment
-
-### Update Environment Variables for Custom Domain
-
-After custom domain is active, update:
-
-```bash
-VITE_API_URL=https://queencandles.co.nz
-```
-
-Then trigger a new deployment.
-
-### Switch to Stripe Live Keys (After Business Verification)
-
-Once Stripe approves your business:
-
-1. Go to Render dashboard → Environment
-2. Update these variables:
-   ```bash
-   STRIPE_SECRET_KEY=sk_live_...
-   STRIPE_PUBLISHABLE_KEY=pk_live_...
-   VITE_STRIPE_PUBLISHABLE_KEY=pk_live_...
-   ```
-3. Click **"Save Changes"**
-4. Render will automatically redeploy
-
-## ⚡ Render Free Tier Limitations
-
-**Important:** Free tier services:
-- Sleep after 15 minutes of inactivity
-- Take ~30 seconds to wake up
-- 750 hours/month (enough for one service)
-- **Consider upgrading to Starter ($7/month) for:**
-  - No sleeping
-  - Custom domain support
-  - Better performance
-
-## 🐛 Troubleshooting
-
-### Build Fails
-- Check build logs in Render dashboard
-- Verify all dependencies in package.json
-- Ensure Node version matches (18+)
-
-### Database Connection Errors
-- Verify DATABASE_URL is set correctly
-- Check database is in same region as web service
-- Ensure init.sql has run successfully
-
-### Site Shows "Service Unavailable"
-- Free tier may be sleeping - wait 30 seconds
-- Check deployment logs for errors
-- Verify PORT environment variable is set
-
-### Stripe Payments Don't Work
-- Confirm you're using TEST keys initially
-- Check browser console for errors
-- Verify VITE_STRIPE_PUBLISHABLE_KEY matches STRIPE_PUBLISHABLE_KEY
-
-## 📱 Monitoring
-
-Monitor your app:
-- **Render Dashboard:** Real-time logs and metrics
-- **Stripe Dashboard:** Payment activity
-- **Browser DevTools:** Client-side errors
-
-## 🎉 Success Checklist
-
-- [ ] Site loads at Render URL
-- [ ] Products display correctly
-- [ ] Cart functionality works
-- [ ] Test payment completes successfully
-- [ ] Custom domain points to site
-- [ ] HTTPS is working
-- [ ] Database contains test order
-- [ ] Submitted site URL to Stripe for verification
-
-## 🚀 Next Steps
-
-1. **Test thoroughly** with Stripe test cards
-2. **Submit to Stripe** for business verification (use your Render URL)
-3. **Monitor** for any errors in first few days
-4. **Switch to live keys** after Stripe approval
-5. **Consider upgrading** to paid Render plan if needed
-
-## 💡 Tips
-
-- **Keep test mode active** until fully tested
-- **Use Stripe test cards** for development:
-  - Success: 4242 4242 4242 4242
-  - Decline: 4000 0000 0000 0002
-- **Monitor Render logs** for first few days
-- **Set up error tracking** (like Sentry) for production
+**Current Deployment:** https://queen-bee.fly.dev  
+**Platform:** Fly.io  
+**Database:** PostgreSQL on Fly.io
 
 ---
 
-Need help? Check:
-- [Render Docs](https://render.com/docs)
-- [Stripe Testing](https://stripe.com/docs/testing)
+## 🚀 Quick Deployment
+
+```bash
+# Build client locally (required due to Docker npm bug)
+cd client
+npm run build
+cd ..
+
+# Deploy to Fly.io
+flyctl deploy
+
+# Check status
+flyctl status --app queen-bee
+```
+
+---
+
+## 📋 Initial Setup (One-Time)
+
+### Prerequisites
+
+- [Fly.io CLI installed](https://fly.io/docs/hands-on/install-flyctl/)
+- Fly.io account created and authenticated
+- GitHub repository with your code
+
+### 1. Install Fly.io CLI
+
+```bash
+# macOS
+brew install flyctl
+
+# Login
+flyctl auth login
+```
+
+### 2. Create PostgreSQL Database
+
+```bash
+# Create database cluster
+flyctl postgres create --name queen-bee-db
+
+# Save the connection string that appears
+# Format: postgres://username:password@hostname/database
+```
+
+### 3. Create and Deploy App
+
+```bash
+# Initialize Fly.io app (creates fly.toml)
+flyctl launch --name queen-bee
+
+# When prompted:
+# - Choose region closest to you
+# - Do NOT deploy yet (we need to set secrets first)
+
+# Attach database to app
+flyctl postgres attach queen-bee-db --app queen-bee
+```
+
+### 4. Set Environment Secrets
+
+```bash
+# Set Stripe keys
+flyctl secrets set STRIPE_SECRET_KEY=sk_test_YOUR_KEY --app queen-bee
+flyctl secrets set STRIPE_PUBLISHABLE_KEY=pk_test_YOUR_KEY --app queen-bee
+
+# Set any other environment variables
+flyctl secrets set NODE_ENV=production --app queen-bee
+
+# View all secrets
+flyctl secrets list --app queen-bee
+```
+
+### 5. Configure for Production
+
+Update `client/vite.config.js` with Fly.io URL:
+
+```javascript
+const apiUrl = mode === "production"
+  ? "https://queen-bee.fly.dev/api"
+  : "http://localhost:8080/api";
+```
+
+### 6. First Deployment
+
+```bash
+# Build client locally (IMPORTANT: due to Docker npm bug)
+cd client
+npm run build
+cd ..
+
+# Deploy
+flyctl deploy --app queen-bee
+
+# Monitor deployment
+flyctl logs --app queen-bee
+```
+
+---
+
+## 📊 Database Setup
+
+### Connect to Database
+
+```bash
+# Connect via psql
+flyctl postgres connect -a queen-bee-db
+
+# Inside psql:
+\c queen_bee              # Switch to queen_bee database
+\dt                       # List tables
+```
+
+### Run Migrations
+
+```bash
+# SSH into app
+flyctl ssh console -a queen-bee
+
+# Inside the container, run migrations if needed
+```
+
+### Seed Database
+
+```sql
+-- Connect to database
+flyctl postgres connect -a queen-bee-db
+
+-- Switch to correct database
+\c queen_bee
+
+-- Run your seed SQL files
+-- Copy contents from database/init.sql or database/migrations/
+```
+
+---
+
+## 🔧 Configuration Files
+
+### fly.toml
+
+Key settings in your `fly.toml`:
+
+```toml
+app = "queen-bee"
+
+[build]
+  # Using Dockerfile for build
+
+[http_service]
+  internal_port = 8080
+  auto_stop_machines = false      # Keep running (no cold starts)
+  min_machines_running = 1         # Always have 1 instance
+
+[[vm]]
+  memory = '256mb'
+  cpu_kind = 'shared'
+  cpus = 1
+```
+
+### Dockerfile
+
+Ensure your Dockerfile:
+- Copies pre-built `client/dist` (don't build in Docker)
+- Exposes port 8080
+- Uses production Node environment
+
+---
+
+## 🛠️ Common Operations
+
+### Deploy Updates
+
+```bash
+# Build client first (ALWAYS)
+cd client && npm run build && cd ..
+
+# Deploy
+flyctl deploy
+
+# Wait ~2-3 minutes for deployment
+# Check status
+flyctl status --app queen-bee
+```
+
+### View Logs
+
+```bash
+# Real-time logs
+flyctl logs --app queen-bee
+
+# Recent logs
+flyctl logs --app queen-bee -n 100
+```
+
+### Restart App
+
+```bash
+flyctl apps restart queen-bee
+```
+
+### Scale App
+
+```bash
+# Check current scale
+flyctl scale show --app queen-bee
+
+# Scale memory
+flyctl scale memory 512 --app queen-bee
+
+# Scale instances
+flyctl scale count 2 --app queen-bee
+```
+
+### SSH into Container
+
+```bash
+flyctl ssh console -a queen-bee
+
+# Useful commands inside:
+ls -la /app/server/public/images/   # Check images
+cat /app/server/.env                # Check env (won't show secrets)
+exit
+```
+
+---
+
+## 🔍 Troubleshooting
+
+### Images Not Loading
+
+**Problem:** Product images return 404
+
+**Solution:**
+```bash
+# Check image files exist
+flyctl ssh console -a queen-bee
+ls -la /app/server/public/images/
+
+# Verify correct database
+flyctl postgres connect -a queen-bee-db
+\c queen_bee  # Make sure you're in queen_bee, not postgres database
+SELECT image FROM products LIMIT 5;
+```
+
+### Database Issues
+
+**Problem:** App can't connect to database
+
+**Solution:**
+```bash
+# Check database is attached
+flyctl postgres list --app queen-bee
+
+# Verify DATABASE_URL secret exists
+flyctl secrets list --app queen-bee
+```
+
+### Build Failures
+
+**Problem:** Docker build fails with Rollup errors
+
+**Solution:**
+```bash
+# ALWAYS build client locally first
+cd client
+npm run build
+cd ..
+
+# Then deploy
+flyctl deploy
+```
+
+### 502 Errors
+
+**Problem:** App returns 502 Bad Gateway
+
+**Common causes:**
+- App listening on wrong port (must be 8080)
+- App crashed on startup
+- Memory exceeded
+
+**Debug:**
+```bash
+# Check logs for errors
+flyctl logs --app queen-bee
+
+# Check app status
+flyctl status --app queen-bee
+
+# Restart if needed
+flyctl apps restart queen-bee
+```
+
+---
+
+## 📦 Database Management
+
+### Backup Database
+
+```bash
+# Connect and dump
+flyctl postgres connect -a queen-bee-db
+
+# Inside psql:
+\! pg_dump -d queen_bee > backup.sql
+```
+
+### Restore Database
+
+```bash
+# Connect to database
+flyctl postgres connect -a queen-bee-db
+
+# Run restore SQL
+\i /path/to/backup.sql
+```
+
+---
+
+## 🔐 Security Best Practices
+
+- ✅ Never commit secrets to Git
+- ✅ Use `flyctl secrets` for sensitive data
+- ✅ Keep Stripe test keys for development
+- ✅ Rotate keys regularly
+- ✅ Use environment-specific keys (test vs live)
+
+---
+
+## 📈 Monitoring
+
+### Check App Health
+
+```bash
+# Status
+flyctl status --app queen-bee
+
+# Metrics
+flyctl metrics --app queen-bee
+
+# View in browser
+flyctl dashboard
+```
+
+### Database Health
+
+```bash
+# Database status
+flyctl postgres list
+
+# Connect and check
+flyctl postgres connect -a queen-bee-db
+\l                    # List databases
+\dt                   # List tables in current database
+SELECT COUNT(*) FROM products;
+```
+
+---
+
+## 🌐 Custom Domain (Optional)
+
+```bash
+# Add custom domain
+flyctl certs add queencandles.co.nz --app queen-bee
+
+# Check certificate status
+flyctl certs show queencandles.co.nz --app queen-bee
+
+# Update DNS records as instructed
+```
+
+---
+
+## 💡 Key Differences from Render
+
+| Feature | Render | Fly.io |
+|---------|--------|--------|
+| **Cold Starts** | Yes (free tier) | No (with min_machines_running = 1) |
+| **Build** | Server-side | Docker-based (build client locally) |
+| **Database** | Public connection | Private network (more secure) |
+| **Deployment Speed** | ~3-5 min | ~2-3 min |
+| **CLI** | render.com UI | flyctl commands |
+
+---
+
+## 📚 Additional Resources
+
+- **Fly.io Docs:** https://fly.io/docs/
+- **Fly.io PostgreSQL:** https://fly.io/docs/postgres/
+- **Project Troubleshooting:** See `docs/deployment/` for specific issues
+- **Render Archive:** See `docs/archive/render/` for old Render setup
+
+---
+
+## ✅ Deployment Checklist
+
+**Before Each Deployment:**
+- [ ] Code tested locally
+- [ ] Database migrations ready (if any)
+- [ ] Client built: `cd client && npm run build`
+- [ ] Secrets updated (if needed)
+- [ ] Git committed and pushed
+
+**After Deployment:**
+- [ ] Check status: `flyctl status --app queen-bee`
+- [ ] View logs: `flyctl logs --app queen-bee`
+- [ ] Test production site: https://queen-bee.fly.dev
+- [ ] Verify payment flow
+- [ ] Check product images load
+- [ ] Test shipping calculator
+
+---
+
+## 🆘 Getting Help
+
+**Fly.io Community:**
+- Forum: https://community.fly.io
+- Discord: https://fly.io/discord
+
+**Project-Specific Issues:**
+- Check `docs/deployment/` for known fixes
+- Review troubleshooting summaries in project files
+- Test locally first to isolate issues
+
+---
+
+**Last Updated:** November 5, 2025  
+**Current App:** https://queen-bee.fly.dev  
+**Status:** Production ✅
