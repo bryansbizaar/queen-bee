@@ -1,0 +1,27 @@
+id,title,description,price,image,category,stock_quantity,is_active,created_at,updated_at,weight_kg,length_mm,width_mm,height_mm,is_featured,display_order
+2,Corn Cob,160g 15.5H x 4.5W,1600,corn-cob.jpg,candles,12,t,2025-10-28 10:41:52.997761,2025-10-28 10:41:52.997761,,,,,t,2
+3,Bee and Flower,45g 3H X 6.5W,850,bee-and-flower.jpg,candles,18,t,2025-10-28 10:41:52.997761,2025-10-28 10:41:52.997761,,,,,t,3
+4,Rose,40g 3H X 6.5W,800,rose.jpg,candles,20,t,2025-10-28 10:41:52.997761,2025-10-28 10:41:52.997761,,,,,t,4
+12,Old Man Winter,95g 7H x 5W,1100,old-man-winter.jpg,candles,9,t,2025-10-28 10:41:52.997761,2025-10-28 10:41:52.997761,,,,,f,12
+5,Flower,40g 3H x 6.5W,800,flower.jpg,candles,6,t,2025-10-28 10:41:52.997761,2025-10-28 10:41:52.997761,,,,,t,5
+14,Pinecone (sm),25g 4H x 3.5W,600,pinecone-sm.jpg,candles,10,t,2025-10-28 10:41:52.997761,2025-10-28 10:41:52.997761,,,,,f,14
+15,Pinecone (lg),65g 8.5H x 4W,900,pinecone-lg.jpg,candles,10,t,2025-10-28 10:41:52.997761,2025-10-28 10:41:52.997761,,,,,f,15
+16,Snowman,35g 6H x 4W,800,snowman.jpg,candles,10,t,2025-10-28 10:41:52.997761,2025-10-28 10:41:52.997761,,,,,f,16
+17,Morel Mushroom,80g 11H x 4.5W each,1000,morel.jpg,candles,10,t,2025-10-28 10:41:52.997761,2025-10-28 10:41:52.997761,,,,,f,17
+18,Flowers (set of 4),80g (4x 20g) 2H x 4W,1000,four-flowers.jpg,candles,10,t,2025-10-28 10:41:52.997761,2025-10-28 10:41:52.997761,,,,,f,18
+19,Beehive Skep (lg),245g 8H x 7.5W,1700,skep-lg.jpg,candles,10,t,2025-10-28 10:41:52.997761,2025-10-28 10:41:52.997761,,,,,f,19
+20,Tree (sm),40g 8H x 4W,800,tree-sm.jpg,candles,10,t,2025-10-28 10:41:52.997761,2025-10-28 10:41:52.997761,,,,,f,20
+21,Tree (lg),200g 14H x 7W,1600,tree-lg.jpg,candles,10,t,2025-10-28 10:41:52.997761,2025-10-28 10:41:52.997761,,,,,f,21
+22,Turkey,100g 9H x 8W,1200,turkey.jpg,candles,10,t,2025-10-28 10:41:52.997761,2025-10-28 10:41:52.997761,,,,,f,22
+23,Frog,120g 6H x 6W,1300,tree-sm.jpg,candles,10,t,2025-10-28 10:41:52.997761,2025-10-28 10:41:52.997761,,,,,f,23
+24,Hedgehog,60g 5.5H x 5W,800,hedgehog.jpg,candles,10,t,2025-10-28 10:41:52.997761,2025-10-28 10:41:52.997761,,,,,f,24
+25,Racoon,45g 5.5H x 4W,800,racoon.jpg,candles,10,t,2025-10-28 10:41:52.997761,2025-10-28 10:41:52.997761,,,,,f,25
+26,Moose,40g 5H x 4W,800,moose.jpg,candles,10,t,2025-10-28 10:41:52.997761,2025-10-28 10:41:52.997761,,,,,f,26
+8,Beehive Skep (med),90g 6.5H x 6W,1000,skep-lg.jpg,candles,9,t,2025-10-28 10:41:52.997761,2025-10-28 10:41:52.997761,,,,,t,8
+10,Woodland Bear,50g 5.5H x 4.5W,900,bear-lg.jpg,candles,9,t,2025-10-28 10:41:52.997761,2025-10-28 10:41:52.997761,,,,,t,10
+11,Honey Pot,135g 5H x 7W,1300,honey-pot.jpg,candles,9,t,2025-10-28 10:41:52.997761,2025-10-28 10:41:52.997761,,,,,f,11
+7,Fern Ball,280g 8H x 9W,2000,fern-ball.jpg,candles,9,t,2025-10-28 10:41:52.997761,2025-10-28 10:41:52.997761,,,,,t,7
+9,Bear and Skep,50g 6H x 5W,900,bear-and-skep.jpg,candles,8,t,2025-10-28 10:41:52.997761,2025-10-28 10:41:52.997761,,,,,t,9
+1,Dragon,150g 11.5H x 8W,1500,dragon.jpg,candles,5,t,2025-10-28 10:41:52.997761,2025-10-28 10:41:52.997761,,,,,t,1
+13,Beehive Skep (sm),30g 4H x 3.5W,700,skep-sm.jpg,candles,9,t,2025-10-28 10:41:52.997761,2025-10-28 10:41:52.997761,,,,,f,13
+6,Swirl,160g 6.5H x 7.5W,1500,swirl.jpg,candles,7,t,2025-10-28 10:41:52.997761,2025-10-28 10:41:52.997761,,,,,t,6

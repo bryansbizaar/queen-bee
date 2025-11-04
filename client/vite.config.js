@@ -4,7 +4,7 @@ import react from "@vitejs/plugin-react";
 export default defineConfig(({ mode }) => {
   const apiUrl =
     mode === "production"
-      ? "https://queen-bee-candles.onrender.com/api"
+      ? "https://queen-bee.fly.dev/api"
       : "http://localhost:8080/api";
 
   // IMPORTANT: This is your Stripe publishable key for production

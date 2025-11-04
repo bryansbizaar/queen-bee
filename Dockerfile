@@ -12,38 +12,20 @@ WORKDIR /app
 # Set production environment
 ENV NODE_ENV="production"
 
-
-# Throw-away build stage to reduce size of final image
-FROM base AS build
-
-# Install packages needed to build node modules
+# Install packages needed for production
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential node-gyp pkg-config python-is-python3
+    apt-get install --no-install-recommends -y && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-# Install node modules
+# Copy package files and install production dependencies
 COPY package-lock.json package.json ./
-RUN npm ci --include=dev
+RUN npm ci --omit=dev
 
-# Install client dependencies (including optional packages for Rollup)
-COPY client/package-lock.json client/package.json ./client/
-RUN cd client && npm ci --include=optional
+# Copy pre-built client and server code
+COPY client/dist ./client/dist
+COPY server ./server
+COPY database ./database
 
-# Copy application code
-COPY . .
-
-# Build application
-RUN npm run build
-
-# Remove development dependencies
-RUN npm prune --omit=dev
-
-
-# Final stage for app image
-FROM base
-
-# Copy built application
-COPY --from=build /app /app
-
-# Start the server by default, this can be overwritten at runtime
-EXPOSE 3000
+# Start the server
+EXPOSE 8080
 CMD [ "npm", "run", "start" ]
