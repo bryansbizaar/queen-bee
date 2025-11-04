@@ -1,12 +1,13 @@
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import formatAmount from "../utils/formatAmount";
+import { SERVER_BASE_URL } from "../services/api";
 
 const CardWithLink = ({ id, title, price, description, image }) => {
   // Handle both full URLs and image filenames
   const imageUrl = image?.includes("http")
     ? image
-    : `http://localhost:8080/images/${image}`;
+    : `${SERVER_BASE_URL}/images/${image}`;
 
   return (
     <div className="card">
