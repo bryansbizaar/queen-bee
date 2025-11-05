@@ -534,14 +534,14 @@ body {
 .product-actions {
   display: flex;
   align-items: center;
-  gap: var(--spacing-md);
+  gap: var(--spacing-sm);
   flex-wrap: wrap;
 }
 
 .quantity-selector {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-md);
 }
 
 .quantity-selector label {
@@ -552,6 +552,7 @@ body {
 .quantity-input {
   /* Inherit base input styling */
   padding: var(--input-padding);
+  padding-right: calc(var(--input-padding) - 0.6rem);
   border-radius: var(--input-border-radius);
   font-size: 1rem;
   outline: none;
@@ -2022,24 +2023,24 @@ button[disabled]:hover {
   .contact-container {
     padding: 1.5rem 1rem;
   }
-  
+
   .contact-header h1 {
     font-size: 2rem;
   }
-  
+
   .contact-subtitle {
     font-size: 1.1rem;
   }
-  
+
   .contact-main {
     grid-template-columns: 1fr;
     gap: 2.5rem;
   }
-  
+
   .contact-form {
     padding: 1.5rem;
   }
-  
+
   .form-row {
     grid-template-columns: 1fr;
     gap: 0;
@@ -2050,15 +2051,15 @@ button[disabled]:hover {
   .contact-container {
     padding: 1rem 0.5rem;
   }
-  
+
   .contact-header h1 {
     font-size: 1.8rem;
   }
-  
+
   .contact-form {
     padding: 1rem;
   }
-  
+
   .submit-button {
     padding: 0.875rem 1.5rem;
     font-size: 1rem;
@@ -2072,7 +2073,7 @@ button[disabled]:hover {
   .submit-button {
     transition: none;
   }
-  
+
   .form-group input:focus,
   .form-group textarea:focus,
   .submit-button:hover:not(:disabled) {
@@ -2085,12 +2086,12 @@ button[disabled]:hover {
   .contact-form {
     border: 2px solid #7a5800;
   }
-  
+
   .form-group input,
   .form-group textarea {
     border: 2px solid #333;
   }
-  
+
   .submit-button {
     border: 2px solid #7a5800;
   }
