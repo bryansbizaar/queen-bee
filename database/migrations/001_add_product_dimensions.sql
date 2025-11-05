@@ -1,4 +1,4 @@
--- Quick Start Migration: Add Dimensions to 4 Test Products
+-- Quick Start Migration: Add Dimensions to 3 Test Products
 -- Date: 2025-10-22
 -- Purpose: Get shipping calculator working with existing products ASAP
 -- Run this: psql -d queenbee -U your_username -f database/migrations/001_add_product_dimensions.sql
@@ -54,17 +54,17 @@ SET
   height_mm = 30
 WHERE title = 'Bee and Flower';
 
--- Rose: "40g 3H X 6.5W" → 40g, 65mm×65mm×30mm (flat)
+-- Flower: "40g 3H X 6.5W" → 40g, 65mm×65mm×30mm (flat)
 UPDATE products 
 SET 
   weight_kg = 0.040,
   length_mm = 65,
   width_mm = 65,
   height_mm = 30
-WHERE title = 'Rose';
+WHERE title = 'Flower';
 
 -- ==================================================================
--- STEP 3: Verify - Should show all 4 products with dimensions
+-- STEP 3: Verify - Should show all 3 products with dimensions
 -- ==================================================================
 
 DO $$
@@ -106,10 +106,11 @@ FROM products
 ORDER BY weight_kg;
 
 -- Expected output:
--- Rose             | $8.00  | 0.040kg | 65×65×30mm   | Small
+-- Flower           | $8.00  | 0.040kg | 65×65×30mm   | Small
 -- Bee and Flower   | $8.50  | 0.045kg | 65×65×30mm   | Small
 -- Dragon           | $15.00 | 0.150kg | 80×80×115mm  | Large
 -- Corn Cob         | $16.00 | 0.160kg | 45×45×155mm  | Large
+-- Note: Rose was removed as it was duplicate of Flower
 
 -- ==================================================================
 -- DONE! Ready to test shipping calculator

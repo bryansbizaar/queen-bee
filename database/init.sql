@@ -71,4 +71,4 @@ INSERT INTO products (title, description, price, image, category, stock_quantity
 ('Dragon', '150g 11.5H x 8W', 1500, 'dragon.jpg', 'candles', 5, true, true, 1),
 ('Corn Cob', '160g 15.5H x 4.5W', 1600, 'corn-cob.jpg', 'candles', 12, true, true, 2),
 ('Bee and Flower', '45g 3H X 6.5W', 850, 'bee-and-flower.jpg', 'candles', 18, true, true, 3),
-('Rose', '40g 3H X 6.5W', 800, 'rose.jpg', 'candles', 20, true, true, 4);
+('Flower', '40g 3H X 6.5W', 800, 'flower.jpg', 'candles', 20, true, true, 4);

@@ -1705,7 +1705,7 @@ body {
 /* Skip Link for Keyboard Navigation */
 .skip-link {
   position: absolute;
-  top: -40px;
+  top: -100px;
   left: 6px;
   background: #000;
   color: #fff;
