@@ -8,7 +8,7 @@ A professional full-stack e-commerce application showcasing modern web developme
 
 This full-stack application demonstrates complete e-commerce functionality with React, Node.js, PostgreSQL, and Stripe integration.
 
-**Live Features**: Product catalog, shopping cart with sidebar quick-edit, secure checkout, order management, inventory tracking, and customer contact form with email notifications.
+**Live Features**: Product catalog, shopping cart with sidebar quick-edit, secure checkout, order management, inventory tracking, admin dashboard for inventory management, and customer contact form with email notifications.
 
 ## 📸 Screenshots
 
@@ -46,6 +46,7 @@ _Seamless experience across all devices_
 
 ### **Business Value**
 
+- **Admin Dashboard**: Secure web-based inventory management with real-time stock updates
 - **Enhanced Shopping Experience**: Cart sidebar for quick edits without losing checkout progress
 - **Secure Payment Processing**: Full Stripe integration with webhook validation
 - **Production Ready**: PostgreSQL database, automated testing, CI/CD pipeline
@@ -86,6 +87,7 @@ cd client && npm install && npm run dev
 **Access**: 
 - Frontend: http://localhost:3000
 - Backend API: http://localhost:8080
+- Admin Dashboard: http://localhost:3000/admin/login
 - pgAdmin: http://localhost:8081
 
 ---
@@ -158,6 +160,7 @@ This project demonstrates **reliable, scalable, and maintainable** software arch
 - `POST /api/contact` - Contact form submission
 - `POST /api/shipping/calculate` - Calculate shipping rates
 - `GET /api/shipping/test` - Shipping service health check
+- `GET /api/admin/*` - Admin operations (authenticated)
 - `GET /images/*` - Static asset delivery
 
 ---
@@ -169,6 +172,7 @@ This project demonstrates **reliable, scalable, and maintainable** software arch
 - **[API.md](API.md)** - Comprehensive API documentation
 - **[DEPLOYMENT.md](DEPLOYMENT.md)** - Production deployment guide
 - **[CHANGELOG.md](CHANGELOG.md)** - Version history and release notes
+- **[ADMIN_DASHBOARD_GUIDE.md](ADMIN_DASHBOARD_GUIDE.md)** - Admin dashboard user guide
 - **[DEV-SETUP.md](DEV-SETUP.md)** - Development environment setup
 - **[.env.example](server/.env.example)** - Environment configuration templates
 

@@ -10,6 +10,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Admin Dashboard** (November 2025)
+  - Secure web-based inventory management system
+  - Password-protected authentication with bearer token
+  - Product management with inline stock editing
+  - Order management with status updates
+  - Dashboard statistics (total products, active products, low stock alerts, total revenue)
+  - Add/edit/deactivate products through intuitive UI
+  - Real-time stock quantity updates
+  - Product filtering and sorting
+  - Responsive design for mobile and desktop
+  - Separate admin routes (`/admin/login`, `/admin/dashboard`, `/admin/orders`)
+  - Backend API endpoints for admin operations (`/api/admin/*`)
+  - Comprehensive admin documentation (ADMIN_DASHBOARD_GUIDE.md)
 - **Cart Sidebar Feature**
   - Slide-out cart sidebar accessible from header cart icon
   - Quick cart editing without losing checkout progress
@@ -287,7 +300,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Limited product search functionality
 - Single currency support (NZD only)
 - No email notifications for orders
-- No admin dashboard for inventory management
 - Images not optimized or served via CDN
 - No caching layer for API responses
 
@@ -305,7 +317,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Planned Features
 - Customer accounts and authentication
 - Order history for registered users
-- Admin dashboard for inventory management
 - Email notifications (order confirmation, shipping updates)
 - Product search and filtering
 - Customer reviews and ratings

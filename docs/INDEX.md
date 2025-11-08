@@ -6,6 +6,7 @@ Quick navigation to all project documentation.
 
 - **[README.md](../README.md)** - Project overview and setup
 - **[DEV-SETUP.md](DEV-SETUP.md)** - Development environment setup
+- **[ADMIN_DASHBOARD_GUIDE.md](../ADMIN_DASHBOARD_GUIDE.md)** - ⭐ Admin dashboard user guide
 
 ## 🧪 Testing
 
@@ -27,6 +28,12 @@ Quick navigation to all project documentation.
 
 - **[DEV-SETUP.md](DEV-SETUP.md)** - Development environment setup
 - **[LOCAL-CI-SETUP.md](LOCAL-CI-SETUP.md)** - Local CI/CD setup
+
+## 🔐 Admin Dashboard
+
+- **[ADMIN_DASHBOARD_GUIDE.md](../ADMIN_DASHBOARD_GUIDE.md)** - ⭐ Complete admin guide
+- **[ADMIN_SETUP_SUMMARY.md](ADMIN_SETUP_SUMMARY.md)** - Technical implementation details
+- **[ADMIN_TESTING_CHECKLIST.md](ADMIN_TESTING_CHECKLIST.md)** - Testing procedures
 
 ## 📧 Contact Form
 
@@ -57,6 +64,7 @@ Historical documentation and deprecated guides:
 ## 🆕 Recent Changes
 
 - **[../CHANGELOG.md](../CHANGELOG.md)** - Change log
+- **Admin Dashboard** (November 2025) - Web-based inventory management
 - **[CLEANUP_SUMMARY.md](CLEANUP_SUMMARY.md)** - Recent documentation cleanup
 
 ---
@@ -77,4 +85,4 @@ Historical documentation (scripts, troubleshooting, implementation details) is k
 
 ---
 
-**Last Updated:** October 29, 2025
+**Last Updated:** November 6, 2025

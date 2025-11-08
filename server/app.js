@@ -8,6 +8,7 @@ import stripeRouter from "./routes/stripe.routes.js";
 import orderRouter from "./routes/order.routes.js";
 import shippingRouter from "./routes/shipping.routes.js";
 import contactRouter from "./routes/contact.routes.js";
+import adminRouter from "./routes/admin.routes.js";
 import { globalErrorHandler, notFoundHandler } from "./middleware/errorHandler.js";
 
 dotenv.config();
@@ -32,6 +33,7 @@ app.use("/api/stripe", stripeRouter);
 app.use("/api/orders", orderRouter);
 app.use("/api/shipping", shippingRouter);
 app.use("/api/contact", contactRouter);
+app.use("/api/admin", adminRouter);
 
 // Health check route
 app.get("/api/health", (req, res) => {

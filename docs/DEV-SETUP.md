@@ -81,7 +81,9 @@ This will start:
 
 - **Client (React):** http://localhost:3000
 - **Server (Express API):** http://localhost:8080
+- **Admin Dashboard:** http://localhost:3000/admin/login (password: `admin123`)
 - **API Endpoints:** http://localhost:8080/api/
+- **pgAdmin:** http://localhost:8081 (if using Docker)
 
 ## Project Structure
 

@@ -1,8 +1,8 @@
-# API Documentation - Queen Bee Candles
+# API Documentation
 
 **Base URL**: `http://localhost:8080` (development)  
-**API Version**: 1.0  
-**Last Updated**: October 22, 2025
+**API Version**: 1.1  
+**Last Updated**: November 6, 2025
 
 ---
 
@@ -17,13 +17,14 @@
 - [Orders API](#orders-api)
 - [Shipping API](#shipping-api)
 - [Stripe Payment API](#stripe-payment-api)
+- [Admin API](#admin-api)
 - [Static Assets](#static-assets)
 
 ---
 
 ## Overview
 
-The Queen Bee Candles API is a RESTful API that provides endpoints for managing products, orders, and payment processing. All endpoints return JSON responses and follow standard HTTP status codes.
+The API is a RESTful API that provides endpoints for managing products, orders, and payment processing. All endpoints return JSON responses and follow standard HTTP status codes.
 
 ### Base Endpoints
 
@@ -39,12 +40,17 @@ GET  /images/:filename          # Static image serving
 
 ## Authentication
 
-**Current Status**: No authentication required (public API for e-commerce)
+**Current Status**: Admin endpoints require bearer token authentication
 
-**Future Implementation**: Admin endpoints will require JWT authentication
-- Products: Create, update, delete
-- Orders: Full order management
-- Inventory: Stock adjustments
+**Public Endpoints**: No authentication required
+- Product catalog (read-only)
+- Order creation (after payment)
+- Payment processing
+
+**Admin Endpoints**: Bearer token authentication required
+- `/api/admin/*` - All admin operations
+- Token: Simple password-based authentication
+- Header: `Authorization: Bearer <ADMIN_PASSWORD>`
 
 ---
 
@@ -1115,6 +1121,269 @@ Retrieve order associated with a payment intent.
 
 ---
 
+## Admin API
+
+**Base Path**: `/api/admin`  
+**Authentication**: Required (Bearer token)  
+**Access**: Admin dashboard only
+
+### Authentication
+
+All admin endpoints require authentication via bearer token:
+
+```javascript
+fetch('/api/admin/products', {
+  headers: {
+    'Authorization': `Bearer ${adminPassword}`
+  }
+});
+```
+
+**Unauthorized Response** (401):
+```json
+{
+  "success": false,
+  "message": "Unauthorized - Invalid admin credentials"
+}
+```
+
+---
+
+### Get All Products (Admin)
+
+**Endpoint**: `GET /api/admin/products`  
+**Auth**: Required  
+**Purpose**: Retrieve all products including inactive ones
+
+**Response** (200 OK):
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "title": "Product Name",
+      "description": "Handcrafted product description",
+      "price": 1500,
+      "image": "dragon.jpg",
+      "category": "candles",
+      "stock_quantity": 10,
+      "is_active": true,
+      "is_featured": true,
+      "display_order": 1,
+      "weight_kg": 0.28,
+      "length_mm": 90,
+      "width_mm": 90,
+      "height_mm": 80,
+      "created_at": "2025-01-01T00:00:00Z",
+      "updated_at": "2025-11-06T00:00:00Z"
+    }
+  ],
+  "count": 25
+}
+```
+
+---
+
+### Get Product by ID (Admin)
+
+**Endpoint**: `GET /api/admin/products/:id`  
+**Auth**: Required  
+**Purpose**: Retrieve a single product with all details
+
+**Response** (200 OK): Single product object  
+**Response** (404 Not Found): Product doesn't exist
+
+---
+
+### Create Product
+
+**Endpoint**: `POST /api/admin/products`  
+**Auth**: Required  
+**Purpose**: Add a new product to the catalog
+
+**Request Body**:
+```json
+{
+  "title": "New Candle",
+  "description": "Beautiful handcrafted candle",
+  "price": 1200,
+  "image": "new-candle.jpg",
+  "category": "candles",
+  "stock_quantity": 15,
+  "is_active": true,
+  "is_featured": false,
+  "display_order": 10,
+  "weight_kg": 0.25,
+  "length_mm": 80,
+  "width_mm": 80,
+  "height_mm": 70
+}
+```
+
+**Required Fields**: `title`, `price`
+
+**Response** (201 Created):
+```json
+{
+  "success": true,
+  "message": "Product created successfully",
+  "data": { /* new product object */ }
+}
+```
+
+---
+
+### Update Product
+
+**Endpoint**: `PUT /api/admin/products/:id`  
+**Auth**: Required  
+**Purpose**: Update an existing product (partial updates supported)
+
+**Request Body**: Any product fields to update
+
+**Response** (200 OK):
+```json
+{
+  "success": true,
+  "message": "Product updated successfully",
+  "data": { /* updated product */ }
+}
+```
+
+---
+
+### Update Stock Quantity
+
+**Endpoint**: `PATCH /api/admin/products/:id/stock`  
+**Auth**: Required  
+**Purpose**: Quick stock quantity update (used by inline editing)
+
+**Request Body**:
+```json
+{
+  "stock_quantity": 25
+}
+```
+
+**Response** (200 OK):
+```json
+{
+  "success": true,
+  "message": "Stock updated successfully",
+  "data": {
+    "id": 1,
+    "title": "Product Name",
+    "stock_quantity": 25
+  }
+}
+```
+
+---
+
+### Deactivate Product
+
+**Endpoint**: `DELETE /api/admin/products/:id`  
+**Auth**: Required  
+**Purpose**: Soft delete (set is_active = false)
+
+**Note**: This is a soft delete - product remains in database but is hidden from store
+
+**Response** (200 OK):
+```json
+{
+  "success": true,
+  "message": "Product deactivated successfully",
+  "data": {
+    "id": 1,
+    "title": "Dragon Candle"
+  }
+}
+```
+
+---
+
+### Get All Orders (Admin)
+
+**Endpoint**: `GET /api/admin/orders`  
+**Auth**: Required  
+**Purpose**: Retrieve all orders with customer details
+
+**Query Parameters**:
+- `status` (optional): Filter by order status
+- `limit` (optional): Number of results (default: 50)
+- `offset` (optional): Pagination offset (default: 0)
+
+**Example**: `GET /api/admin/orders?status=pending&limit=20`
+
+**Response** (200 OK):
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "customer_email": "customer@example.com",
+      "first_name": "John",
+      "last_name": "Doe",
+      "phone": "021234567",
+      "total_amount": 4500,
+      "status": "pending",
+      "payment_intent_id": "pi_xxx",
+      "items": [
+        {
+          "product_title": "Product Name",
+          "quantity": 2,
+          "unit_price": 1500,
+          "total_price": 3000
+        }
+      ],
+      "created_at": "2025-11-06T10:00:00Z"
+    }
+  ],
+  "count": 15
+}
+```
+
+---
+
+### Get Order by ID (Admin)
+
+**Endpoint**: `GET /api/admin/orders/:id`  
+**Auth**: Required  
+**Purpose**: Retrieve single order with full details
+
+**Response** (200 OK): Full order object with items  
+**Response** (404 Not Found): Order doesn't exist
+
+---
+
+### Update Order Status
+
+**Endpoint**: `PATCH /api/admin/orders/:id/status`  
+**Auth**: Required  
+**Purpose**: Update order fulfillment status
+
+**Request Body**:
+```json
+{
+  "status": "shipped"
+}
+```
+
+**Valid Statuses**: `pending`, `processing`, `shipped`, `delivered`, `cancelled`
+
+**Response** (200 OK):
+```json
+{
+  "success": true,
+  "message": "Order status updated successfully",
+  "data": { /* updated order */ }
+}
+```
+
+---
+
 ## Static Assets
 
 ### Get Product Image
@@ -1213,6 +1482,14 @@ Use Stripe test mode credentials for development:
 
 ## Changelog
 
+### Version 1.1 (November 2025)
+- Added Admin API with authentication
+- Product management endpoints (CRUD operations)
+- Order management endpoints with status updates
+- Inline stock quantity updates
+- Soft delete for products
+- Bearer token authentication for admin routes
+
 ### Version 1.0 (October 2025)
 - Initial API release
 - Product catalog endpoints
@@ -1231,4 +1508,4 @@ Use Stripe test mode credentials for development:
 
 ---
 
-*Last updated: October 22, 2025*
+*Last updated: November 6, 2025*
