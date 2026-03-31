@@ -157,39 +157,42 @@ class APIService {
   }
 
   // GET request
-  async get(endpoint, params = {}) {
+  async get(endpoint, params = {}, options = {}) {
     const queryString = new URLSearchParams(params).toString();
     const url = queryString ? `${endpoint}?${queryString}` : endpoint;
 
-    return this.request(url, { method: "GET" });
+    return this.request(url, { method: "GET", ...options });
   }
 
   // POST request
-  async post(endpoint, data = {}) {
+  async post(endpoint, data = {}, options = {}) {
     return this.request(endpoint, {
       method: "POST",
       body: JSON.stringify(data),
+      ...options,
     });
   }
 
   // PUT request
-  async put(endpoint, data = {}) {
+  async put(endpoint, data = {}, options = {}) {
     return this.request(endpoint, {
       method: "PUT",
       body: JSON.stringify(data),
+      ...options,
     });
   }
 
   // DELETE request
-  async delete(endpoint) {
-    return this.request(endpoint, { method: "DELETE" });
+  async delete(endpoint, options = {}) {
+    return this.request(endpoint, { method: "DELETE", ...options });
   }
 
   // PATCH request
-  async patch(endpoint, data = {}) {
+  async patch(endpoint, data = {}, options = {}) {
     return this.request(endpoint, {
       method: "PATCH",
       body: JSON.stringify(data),
+      ...options,
     });
   }
 }
